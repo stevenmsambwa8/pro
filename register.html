@@ -1,0 +1,369 @@
+<script type="module">import { supabase } from "./supabase-client.js";supabase.auth.getSession().then(({ data }) => {
+if (data.session) { window.location.href = "index"; }});</script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <link rel="icon" href="logo.png" type="image/x-icon">
+<meta name="title" content="VYNAL Artist Dashboard — Music Feed, Uploads, Debates & Creator Tools">
+<meta name="description" content="Manage your music, upload tracks, join debates, explore states, follow creators, and stay connected with the full VYNAL artist dashboard — all in one fast, powerful interface.">
+
+<!-- Keywords (Optional but clean) -->
+<meta name="keywords" content="VYNAL, artist dashboard, music platform, upload music, debates, creator tools, vynal.dev, music community, artist feed, digital music tools">
+
+<!-- Canonical -->
+<link rel="canonical" href="https://vynal.dev/">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://vynal.dev/">
+<meta property="og:title" content="VYNAL Artist Dashboard — Manage Your Music & Creator Tools">
+<meta property="og:description" content="Your central hub for music uploads, debates, states, creator insights, metrics, and community interactions on VYNAL.">
+<meta property="og:image" content="https://vynal.dev/logo.png">
+
+<!-- Twitter / X -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:url" content="https://vynal.dev/">
+<meta name="twitter:title" content="VYNAL Artist Dashboard — Manage Your Music & Creator Tools">
+<meta name="twitter:description" content="Access the full VYNAL artist experience — music uploads, debates, metrics, states, and social interactions in one dashboard.">
+<meta name="twitter:image" content="https://vynal.dev/logo.png">
+
+<!-- Theme Color -->
+<meta name="theme-color" content="#000000">
+
+<!-- Robots -->
+<meta name="robots" content="index, follow">
+
+<title>VYNAL Artist Dashboard</title>
+<link rel="stylesheet" href="remixicon.min.css">
+<link rel="stylesheet" href="start.css">
+<link rel="stylesheet" href="mall.css">
+<link rel="stylesheet" href="inter.css">
+<div id="progress"></div>
+<style>
+#progress {
+  position: fixed;
+  top: 0; left: 0;
+  height: 3px;
+  width: 0;
+  background: var(--brand);
+  transition: width 0.3s ease;
+  z-index: 9999;
+}
+</style>
+
+<script>
+function showProgress() {
+  const bar = document.getElementById('progress');
+  bar.style.width = '30%';
+  setTimeout(() => bar.style.width = '80%', 200);
+}
+function hideProgress() {
+  const bar = document.getElementById('progress');
+  bar.style.width = '100%';
+  setTimeout(() => bar.style.display = 'none', 300);
+}
+showProgress();
+// simulate loading content
+window.addEventListener('load', hideProgress);
+</script>
+
+</head>
+<body>
+
+<!-- ===== Header ===== -->
+<header class="header" role="banner">
+
+<div class="searchbar">
+
+
+</div>
+<div class="actions">
+ <button class="btn primary uploading">Register Now</button>
+ <button class="btn ghost Login-btn">Sign in</button>
+ <a> <img class="avatar uploading" src="user.webp"></a>
+</div>
+
+</header>
+<main class="main">
+<section class="grid-12" aria-label="Key metrics">
+<div class="span-12 special-before">
+ <img src="logo.png" height="40" style="margin-right: 10px">
+ <div style="font-weight:800; font-size:18px;line-height: 1.0;margin-bottom: 5px;margin-right: 10px">VYNAL Developers</div>
+<p style="font-size:14px;margin-right:10px;border-left: 1px solid rgb(255, 255, 255);padding-left:10px;">Let's get ourselves popular, Grab most of trends &<span style="color:var(--brand);font-weight:600"> artist stategies</span> to let you started.!</p> 
+
+ </div>
+</section>
+<section class="grid-12" aria-label="Key metrics">
+<div class="card span-4" style="padding: 16px;border-radius: var(--autoradius);">
+<div style="display:flex; gap:14px; align-items:center;">
+<div>
+<div style="font-weight:600; font-size:20px;line-height: 1.0;margin-bottom: 5px;"> VYNAL developers programme</div>
+<div style="color: rgba(255, 255, 255, 0.849);">Understand what's inside, why running the programme, our paterners & sponsored contents.</div>
+</div>
+
+</div>
+<div class="divider"></div>
+<div class="row">
+<div class="col-4">
+<div class="t-s">Author</div>
+<div class="nowrap" style="color: var(--brand-2)">admin & LTI</div>
+</div>
+<div class="col-4">
+
+<div class="t-bold">20+ </div>
+<div class="t-s">Developers</div>
+</div>
+<div class="col-4">
+
+<div style=" display:flex; gap:8px;">
+<button class="btn primary uploading">Register</button>
+
+</div>
+</div>
+</div>
+</div>
+
+
+</section>
+<section class="grid-12" aria-label="Key metrics">
+<div class="span-4 special-before" style="height: auto">
+ <div style="font-size:20px;line-height: 1.0;">What's Inside <span class="t-800"> VYNAL</span> Developers</div>
+
+
+ </div>
+</section>
+<section class="grid-12" aria-label="Key metrics">
+<div class="span-4 special" style="border: 1px solid var(--border);">
+ <div style="font-weight:600; font-size:20px;line-height: 1.0;margin-bottom: 5px;margin-right: 10px">New Lessons Available</div>
+<p style="font-size:14px;margin-right:10px;border-left: 1px solid rgb(255, 255, 255);padding-left:10px;">Check out some new lessons from the popular music proffesionals inside</p> 
+ <a href="start"><button class="btn-icon" style="color: rgb(255, 255, 255);border: none;background: #ffffff17"><i class="ri-book-2-line ri-xl"></i></button>
+</a>
+ </div>
+ <div class="span-4 special" style="border: 1px solid var(--border);">
+ <div style="font-weight:600; font-size:20px;line-height: 1.0;margin-bottom: 5px;margin-right: 10px">Expert Artistic Interface</div>
+<p style="font-size:14px;margin-right:10px;border-left: 1px solid rgb(255, 255, 255);padding-left:10px;"> Create contents for your next Artistic move by <span class="t-800"> Create feature</span> with Proffesional interface made for you.</p> 
+ <a href="start"><button class="btn-icon" style="color: rgb(255, 255, 255);border: none;background: #ffffff17"><i class="ri-device-line ri-xl"></i></button>
+</a>
+ </div>
+ <div class="span-4 special" style="border: 1px solid var(--border);">
+ <div style="font-weight:600; font-size:20px;line-height: 1.0;margin-bottom: 5px;margin-right: 10px">Sample Packages Download</div>
+<p style="font-size:14px;margin-right:10px;border-left: 1px solid rgb(255, 255, 255);padding-left:10px;">Stunning samples from the best samplers worldwide, Grab them today.</p> 
+ <a href="start"><button class="btn-icon" style="color: rgb(255, 255, 255);border: none;background: #ffffff17"><i class="ri-download-line ri-xl"></i></button>
+</a>
+ </div>
+
+ <div class="span-4 special" style="border: 1px solid var(--border);">
+ <div style="font-weight:600; font-size:20px;line-height: 1.0;margin-bottom: 5px;margin-right: 10px">Share Debate Thoughts</div>
+<p style="font-size:14px;margin-right:10px;border-left: 1px solid rgb(255, 255, 255);padding-left:10px;">Debates! Debates! Let's discuss on what the cause and solution in this industry.</p> 
+ <a href="start"><button class="btn-icon" style="color: rgb(255, 255, 255);border: none;background: ffffff17"><i class="ri-chat-1-line ri-xl"></i></button>
+</a>
+ </div>
+
+ <div class="span-4 special" style="border: 1px solid var(--border);">
+ <div style="font-weight:600; font-size:20px;line-height: 1.0;margin-bottom: 5px;margin-right: 10px">Post Global Creation</div>
+<p style="font-size:14px;margin-right:10px;border-left: 1px solid rgb(255, 255, 255);padding-left:10px;">Post your next project inside. Allow them to like and comment your work.</p> 
+ <a href="start"><button class="btn-icon" style="color: rgb(255, 255, 255);border: none;background: #ffffff17"><i class="ri-add-line ri-xl"></i></button>
+</a>
+ </div> 
+ <div class="span-4 special" style="border: 1px solid var(--border);">
+ <div style="font-weight:600; font-size:20px;line-height: 1.0;margin-bottom: 5px;margin-right: 10px">Clean Account Settings</div>
+<p style="font-size:14px;margin-right:10px;border-left: 1px solid rgb(255, 255, 255);padding-left:10px;">Customize your profile to behave like your life, additional addons for high engagement.</p> 
+ <a href="start"><button class="btn-icon" style="color: rgb(255, 255, 255);border: none;background: #ffffff17"><i class="ri-settings-3-fill ri-xl"></i></button>
+</a>
+ </div>
+ </section>
+<section class="grid-12" aria-label="Key metrics">
+<div class="span-4 special-before" style="height: auto;">
+<div style="font-size:20px;line-height: 1.0;">Meet<span class="t-800"> VYNAL</span> Creators Team</div>
+ </div>
+ </section>
+ <section class="grid-121" aria-label="Key metrics">
+<div class="post-card-2" style="padding:16px; box-sizing:border-box; height:100%;border-radius: var(--autoradius);">
+<div style="display:flex; gap:14px; align-items:center;">
+<div class="cover atoll™" style="width:60px; height:60px;border: 1px solid var(--border);border-radius: var(--autoradius);">
+<img src="user.webp" style=" border-radius: var(--autoradius);">
+</div>
+
+</div>
+<div class="divider"></div>
+<div class="nowrap t-800 atoll™">Atoll™</div>
+<div class="t-s">Position - C.E.O</div>
+</div>
+<div class="post-card-2" style="padding:16px; box-sizing:border-box; height:100%;border-radius: var(--autoradius);">
+<div style="display:flex; gap:14px; align-items:center;">
+<div class="cover" style="width:60px; height:60px;border: 1px solid var(--border);border-radius: var(--autoradius);">
+<img src="user.webp" style=" border-radius: var(--autoradius);">
+</div>
+
+</div>
+<div class="divider"></div>
+<div class="nowrap t-800">Life Time Investor LTI</div>
+<div class="t-s">Position - Manager</div>
+</div>
+<div class="post-card-2" style="padding:16px; box-sizing:border-box; height:100%;border-radius: var(--autoradius);">
+<div style="display:flex; gap:14px; align-items:center;">
+<div class="cover" style="width:60px; height:60px;border: 1px solid var(--border);border-radius: var(--autoradius);">
+<img src="user.webp" style=" border-radius: var(--autoradius);">
+</div>
+
+</div>
+<div class="divider"></div>
+<div class="nowrap t-800">Nabobeatz</div>
+<div class="t-s">Position - A-Manager</div>
+</div>
+<div class="post-card-2" style="padding:16px; box-sizing:border-box; height:100%;border-radius: var(--autoradius);background: var(--border)">
+<div style="display:flex; gap:14px; align-items:center;">
+<div class="cover" style="width:60px; height:60px;border: 1px solid var(--border);border-radius: var(--autoradius);">
+<img src="user.webp" style=" border-radius: var(--autoradius);">
+</div>
+</div>
+<div class="divider"></div>
+<div class="nowrap t-800">Steven</div>
+<div class="t-s">Position - Sponsor lvl 1</div>
+</div>
+</section>
+</main>
+
+<div class="modal-backdrop hidden" id="uploadModal">
+<div class="modal" role="document" style="width: 400px;background: url(bg1.png);background-size: cover;color: black;">
+<h2>Create an account</h2>
+ <p class="muted" style="margin-top: -15px;color: black;">Join the VYNAL developers programme </p>
+<form class="signup">
+        <div class="put">
+            <input class="input" type="text" placeholder="Email*" required style="color: black;border:1px solid grey;background:var(--border)">
+        </div>
+        <div class="put">
+            <input class="input" type="password" placeholder="Password *" required style="color: black;border:1px solid grey;background:var(--border)">
+        </div>
+        <div class="put">
+            <input class="input" type="password" placeholder="Repeat password *" required style="color: black;border:1px solid grey;background:var(--border)">
+        </div>
+        <div class="row">
+            <div class="col-6"><input class="input" type="text" placeholder="Stage name *" required style="color: black;border:1px solid grey;background:var(--border)"></div>
+            <div class="col-6">
+                <select class="input" style="color: black;border:1px solid grey;background:var(--border)">
+                    Who are you?
+                    <option>Musician</option>
+                    <option>Teacher</option>
+                    <option>Producer</option>
+                    <option>Song writter</option>
+                </select>
+            </div>
+        </div>
+        
+            <div style="width:100%"><input class="input" type="text" id="uDesc" placeholder="Add short bio" style="color: black;border:1px solid grey;background:var(--border)"></div>
+       
+        
+            <div style="width:100%;margin: 10px 0;">
+  <label class="file-input-wrapper">
+  <span class="file-btn btn t-sm">Upload Profile picture</span>
+  <span class="file-name"></span>
+  <input class="input file-input" type="file" id="uCover" accept="image/*" style="color: black;border:1px solid grey;background:var(--border)">
+</label>
+
+             </div>
+
+        <div class="progress" aria-hidden="true" style="display:none;"><i id="uProgress" style="width:0%;display:block;height:4px;background:#4CAF50;transition:width 0.3s;"></i></div>
+        <div style="display:flex; gap:8px; justify-content:flex-end;">
+            <button type="button" class="btn ghost Login-btn" title="Why cancel?" id="uploadClose" style="color: #181818;background: none">Sign In</button>
+            <button class="btn primary" id="uSubmit" title="Let's get popular" type="submit"> Create Account</button>
+        </div>
+    </form>
+</div>
+</div>
+
+<!-- Login modal -->
+<div class="modal-backdrop hidden" id="loginModal">
+    <div class="modal" role="document" style="width: 380px;background: url(bg1.png);color: black;">
+      <h2>Sign in to Dashboard</h2>  
+<p class="muted" style="margin-top: -10px;color: black;">Enter your stagename and password to continue</p>  
+<form id="loginForm">  
+    <div class="put"><input id="loginEmail" class="input" type="text" placeholder="Email or Stage name*"  
+            required style="color: black;background:var(--border);border: 1px solid grey"></div>  
+    <br>  
+    <div class="put"><input id="loginPassword" class="input" type="password" placeholder="Password*" required style="color: black;background:var(--border);border: 1px solid grey">  
+    </div>  
+    <div id="loginMessage" class="t-s" style="margin-top:8px;color:#000000"></div>  
+    <a class="t-s" style="margin-top:10px;display:block;" id="forgotPasswordLink" href="forgot-password.html">Forgot your password?</a> <!-- Direct link to the forgot-password page -->  
+    <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:10px;">  
+        <button type="button" class="btn ghost uploading" id="loginClose" style="color: #181818;background: none">Register</button>  
+        <button type="submit" class="btn primary" id="loginSubmit">Sign in</button>  
+    </div>  
+  
+</form>  
+    </div>
+</div>
+
+ 
+
+<div class="modal-backdrop hidden" id="atollModal">
+<div class="modal" role="document" style="width: 400px;background: #181818;">
+<div style="display:flex; gap:14px; align-items:center;">
+<div class="cover" style="width:60px; height:60px;border: 1px solid var(--border);border-radius: var(--autoradius);">
+<img src="user.webp" style=" border-radius: var(--autoradius);">
+</div>
+<div>
+<div style="font-weight:800; font-size:18px;color:white" >Atoll™</div>
+<div class="t-sm" style="color:white">Position - C.E.O</div>
+</div>
+
+<div style="margin-left:auto; display:flex; gap:8px;">
+<button class="btn ghost" id="atollClose" style="border:none;background: var(--border);" data-close="giftModal">
+                    <i class="ri-close-line t-l"></i>
+                </button>
+</div>
+</div>
+<div class="btn t-m" style="border: none;color: white;">
+ Hi, we are Atoll™. As the C.E.O of VYNAL we are going to build the nextkin huge artists profiles. Join now and never be an upcoming again.
+</div>
+ <div style="display:flex; gap:8px; justify-content:flex-end;">
+<button class="btn primary" id="uSubmit" title="Let's chat"><i class="ri-whatsapp-line"></i> Chat WhatsApp</button>
+</div>
+</div>
+</div>
+<script>
+// Safe modal open/close handler without closest() 
+function openModal(id) {
+  document.getElementById(id).classList.remove("hidden");
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.add("hidden");
+}
+
+// Attach events AFTER DOM loads
+document.addEventListener("DOMContentLoaded", () => {
+  // Upload modal
+  document.querySelectorAll(".uploading").forEach(btn => {
+    btn.addEventListener("click", () => openModal("uploadModal"));
+  });
+  document.getElementById("uploadClose").addEventListener("click", () => closeModal("uploadModal"));
+
+  // Atoll modal
+  document.querySelectorAll(".atoll-btn").forEach(btn => {
+    btn.addEventListener("click", () => openModal("atollModal"));
+  });
+  document.getElementById("atollClose").addEventListener("click", () => closeModal("atollModal"));
+
+  // Login modal
+  document.querySelectorAll(".Login-btn").forEach(btn => {
+    btn.addEventListener("click", () => openModal("loginModal"));
+  });
+  document.getElementById("loginClose").addEventListener("click", () => closeModal("loginModal"));
+
+  // Close when tapping dark backdrop
+  document.querySelectorAll(".modal-backdrop").forEach(backdrop => {
+    backdrop.addEventListener("click", (e) => {
+      if (e.target === backdrop) {
+        backdrop.classList.add("hidden");
+      }
+    });
+  });
+});
+</script>
+ <script src="auth.js" type="module"></script>
+<script src="another.js" defer></script>
+</body>
+</html>
