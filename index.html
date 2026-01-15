@@ -798,7 +798,7 @@ document.getElementById('upgradeToPro').addEventListener('click', async () => {
 
 const initAuth = async () => {
   const { data: { session } } = await supabase.auth.getSession()
-  if (!session) return window.location.href = 'index.html'
+  if (!session) return window.location.href = 'register'
 
   const { data: profile } = await supabase.from('profiles').select('*').eq('id', session.user.id).single()
   
@@ -2314,7 +2314,7 @@ const setupModals = () => {
 const setupLogout = () => {
   document.querySelector('.logout-btn')?.addEventListener('click', async () => {
     await supabase.auth.signOut()
-    window.location.href = 'index.html'
+    window.location.href = 'register'
   })
 }
 
