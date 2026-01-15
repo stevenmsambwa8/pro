@@ -1,0 +1,58 @@
+{
+  "rewrites": [
+    {
+      "source": "/@:stagename",
+      "destination": "/profile.html?stagename=:stagename"
+    },
+    {
+      "source": "/post",
+      "has": [
+        { "type": "query", "key": "post" }
+      ],
+      "missing": [
+        { "type": "query", "key": "render", "value": "true" }
+      ],
+      "destination": "/api/post-meta"
+    },
+    {
+      "source": "/post/:id",
+      "destination": "/api/post-meta?post=:id"
+    },
+    {
+      "source": "/events/event/:id",
+      "destination": "/events/event.html?id=:id"
+    },
+    {
+      "source": "/events",
+      "destination": "/events.html"
+    },
+    {
+      "source": "/post",
+      "destination": "/post.html"
+    },
+    {
+      "source": "/:page",
+      "destination": "/:page.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/:path*.html",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    },
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "s-maxage=3600, stale-while-revalidate=600"
+        }
+      ]
+    }
+  ]
+}
