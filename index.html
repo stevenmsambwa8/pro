@@ -9,6 +9,7 @@
 <link rel="stylesheet" href="remixicon.min.css">
 <link rel="stylesheet" href="pro.css">
 <link rel="stylesheet" href="inter.css">
+<script src="https://www.paypal.com/sdk/js?client-id=AVEx-5Bj0KdhsHxeWp0qb2KcbAvA2789Rn9N4c0zdE_5o7tI3diK6PglvP1czccxZbhQnOPTgoc6OpAx&currency=USD"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <style>
 /* Access Blocker Overlay */
@@ -774,26 +775,67 @@ document.getElementById('accessBlockerUpgradeBtn').addEventListener('click', sho
 document.getElementById('upgradeToPro').addEventListener('click', async () => {
   if (!window.currentSession) return
   
-  const btn = document.getElementById('upgradeToPro')
-  btn.disabled = true
-  btn.innerHTML = '<i class="ri-loader-4-line"></i> Processing...'
+  // Hide the upgrade button temporarily and show PayPal button
+  const upgradeBtn = document.getElementById('upgradeToPro')
+  upgradeBtn.style.display = 'none'
   
-  try {
-    const { error } = await supabase
-      .from('profiles')
-      .update({ tier: 'pro' })
-      .eq('id', window.currentSession.user.id)
-    
-    if (error) throw error
-    
-    notify('🎉 Upgraded to Pro! Reloading...', '#10b981')
-    setTimeout(() => window.location.reload(), 1500)
-    
-  } catch (error) {
-    notify('Upgrade failed. Please try again.', '#ef4444')
-    btn.disabled = false
-    btn.innerHTML = '<i class="ri-vip-crown-fill"></i> Start Pro Membership'
+  // Create PayPal button container if it doesn't exist
+  let paypalContainer = document.getElementById('paypal-button-container')
+  if (!paypalContainer) {
+    paypalContainer = document.createElement('div')
+    paypalContainer.id = 'paypal-button-container'
+    upgradeBtn.parentNode.insertBefore(paypalContainer, upgradeBtn.nextSibling)
   }
+  
+  // Render PayPal button
+  paypal.Buttons({
+    createOrder: function(data, actions) {
+      return actions.order.create({
+        purchase_units: [{
+          amount: {
+            value: '4.99',
+            currency_code: 'USD'
+          },
+          description: 'Pro Membership - Music Preview Platform'
+        }]
+      })
+    },
+    onApprove: async function(data, actions) {
+      return actions.order.capture().then(async function(details) {
+        // Payment successful, upgrade user
+        try {
+          const { error } = await supabase
+            .from('profiles')
+            .update({ 
+              tier: 'pro',
+              payment_id: details.id,
+              upgraded_at: new Date().toISOString()
+            })
+            .eq('id', window.currentSession.user.id)
+          
+          if (error) throw error
+          
+          notify('🎉 Payment successful! Upgrading to Pro...', '#10b981')
+          setTimeout(() => window.location.reload(), 1500)
+          
+        } catch (error) {
+          notify('Upgrade failed. Please contact support.', '#ef4444')
+          console.error('Upgrade error:', error)
+        }
+      })
+    },
+    onError: function(err) {
+      notify('Payment failed. Please try again.', '#ef4444')
+      console.error('PayPal error:', err)
+      upgradeBtn.style.display = 'block'
+      paypalContainer.innerHTML = ''
+    },
+    onCancel: function() {
+      notify('Payment cancelled', '#f59e0b')
+      upgradeBtn.style.display = 'block'
+      paypalContainer.innerHTML = ''
+    }
+  }).render('#paypal-button-container')
 })
 
 const initAuth = async () => {
@@ -2427,3 +2469,4 @@ document.addEventListener('click', () => {
 </script>
 </body>
 </html>
+
