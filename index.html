@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="logo.png" type="image/x-icon">
 <meta name="theme-color" content="#000000">
-<title>VYNAL Premium - Pro Dashboard</title>
+<title>VYNAL Live Debate - Pro Dashboard</title>
 <link rel="stylesheet" href="remixicon.min.css">
 <link rel="stylesheet" href="pro.css">
 <link rel="stylesheet" href="inter.css">
@@ -508,7 +508,7 @@
 </div>
 </aside>
 
-<header class="header" role="banner" style="padding: 10px 0;">
+<header class="header" role="banner">
 <div class="moblogo">
 <span><img src="pro.svg" width="80"></span>
 </div>
@@ -665,91 +665,67 @@
 </div>
 </div>
 
+
 <script type="module">
   import { supabase } from './supabase-client.js'
 
 let isPro = false
 let analyticsCharts = {}
 
+// Utility Functions
 const notify = (message, color = '#10b981') => {
   const modal = document.createElement('div')
   modal.className = 'notification-modal-overlay'
-  
-  const iconMap = {
-    '#10b981': 'ri-checkbox-circle-fill',
-    '#ef4444': 'ri-error-warning-fill',
-    '#3b82f6': 'ri-information-fill',
-    '#f59e0b': 'ri-alert-fill'
-  }
-  
-  const icon = iconMap[color] || 'ri-checkbox-circle-fill'
-  
+  const iconMap = {'#10b981': 'ri-checkbox-circle-fill', '#ef4444': 'ri-error-warning-fill', '#3b82f6': 'ri-information-fill', '#f59e0b': 'ri-alert-fill'}
   modal.innerHTML = `
     <div class="notification-modal-content">
-      <i class="${icon} notification-modal-icon" style="color: ${color}"></i>
+      <i class="${iconMap[color] || 'ri-checkbox-circle-fill'} notification-modal-icon" style="color: ${color}"></i>
       <p class="notification-modal-message">${message}</p>
       <button class="notification-modal-btn">OK</button>
     </div>
   `
-  
   document.body.appendChild(modal)
   setTimeout(() => modal.classList.add('active'), 10)
-  
   const closeModal = () => {
     modal.classList.remove('active')
     setTimeout(() => modal.remove(), 300)
   }
-  
   modal.querySelector('.notification-modal-btn').addEventListener('click', closeModal)
-  modal.addEventListener('click', (e) => {
-    if (e.target === modal) closeModal()
-  })
-  
+  modal.addEventListener('click', (e) => { if (e.target === modal) closeModal() })
   setTimeout(closeModal, 3000)
 }
 
-const confirm = (message) => {
-  return new Promise((resolve) => {
-    const modal = document.createElement('div')
-    modal.className = 'confirm-modal-overlay'
-    
-    modal.innerHTML = `
-      <div class="confirm-modal-content">
-        <i class="ri-alert-fill confirm-modal-icon"></i>
-        <h3 class="confirm-modal-title">Confirm Action</h3>
-        <p class="confirm-modal-message">${message}</p>
-        <div class="confirm-modal-actions">
-          <button class="confirm-modal-btn confirm-cancel">Cancel</button>
-          <button class="confirm-modal-btn confirm-delete">Confirm</button>
-        </div>
+const confirm = (message) => new Promise((resolve) => {
+  const modal = document.createElement('div')
+  modal.className = 'confirm-modal-overlay'
+  modal.innerHTML = `
+    <div class="confirm-modal-content">
+      <i class="ri-alert-fill confirm-modal-icon"></i>
+      <h3 class="confirm-modal-title">Confirm Action</h3>
+      <p class="confirm-modal-message">${message}</p>
+      <div class="confirm-modal-actions">
+        <button class="confirm-modal-btn confirm-cancel">Cancel</button>
+        <button class="confirm-modal-btn confirm-delete">Confirm</button>
       </div>
-    `
-    
-    document.body.appendChild(modal)
-    setTimeout(() => modal.classList.add('active'), 10)
-    
-    const closeModal = (result) => {
-      modal.classList.remove('active')
-      setTimeout(() => {
-        modal.remove()
-        resolve(result)
-      }, 300)
-    }
-    
-    modal.querySelector('.confirm-cancel').addEventListener('click', () => closeModal(false))
-    modal.querySelector('.confirm-delete').addEventListener('click', () => closeModal(true))
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) closeModal(false)
-    })
-  })
-}
+    </div>
+  `
+  document.body.appendChild(modal)
+  setTimeout(() => modal.classList.add('active'), 10)
+  const closeModal = (result) => {
+    modal.classList.remove('active')
+    setTimeout(() => { modal.remove(); resolve(result) }, 300)
+  }
+  modal.querySelector('.confirm-cancel').addEventListener('click', () => closeModal(false))
+  modal.querySelector('.confirm-delete').addEventListener('click', () => closeModal(true))
+  modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(false) })
+})
 
 const formatTime = (s) => `${Math.floor(s/60)}`.padStart(2,'0')+':'+`${s%60}`.padStart(2,'0')
 
+// Pro Payment System
 const showPremiumBottomSheet = () => {
   const overlay = document.getElementById('premiumSheetOverlay')
   const sheet = document.getElementById('premiumBottomSheet')
-  
   overlay.classList.add('active')
   setTimeout(() => sheet.classList.add('active'), 10)
 }
@@ -757,29 +733,25 @@ const showPremiumBottomSheet = () => {
 const hidePremiumBottomSheet = () => {
   const overlay = document.getElementById('premiumSheetOverlay')
   const sheet = document.getElementById('premiumBottomSheet')
-  
   sheet.classList.remove('active')
   setTimeout(() => overlay.classList.remove('active'), 400)
 }
 
-document.getElementById('premiumSheetOverlay').addEventListener('click', hidePremiumBottomSheet)
-
+document.getElementById('premiumSheetOverlay')?.addEventListener('click', hidePremiumBottomSheet)
 document.addEventListener('click', (e) => {
   if (e.target.closest('.upgrade-to-pro-btn') || e.target.closest('.upgrade-prompt-btn')) {
     showPremiumBottomSheet()
   }
 })
+document.getElementById('accessBlockerUpgradeBtn')?.addEventListener('click', showPremiumBottomSheet)
 
-document.getElementById('accessBlockerUpgradeBtn').addEventListener('click', showPremiumBottomSheet)
-
-document.getElementById('upgradeToPro').addEventListener('click', async () => {
+// PayPal Payment Handler - ONE-TIME PAYMENT FOR 30 DAYS
+document.getElementById('upgradeToPro')?.addEventListener('click', async () => {
   if (!window.currentSession) return
   
-  // Hide the upgrade button temporarily and show PayPal button
   const upgradeBtn = document.getElementById('upgradeToPro')
   upgradeBtn.style.display = 'none'
   
-  // Create PayPal button container if it doesn't exist
   let paypalContainer = document.getElementById('paypal-button-container')
   if (!paypalContainer) {
     paypalContainer = document.createElement('div')
@@ -787,39 +759,52 @@ document.getElementById('upgradeToPro').addEventListener('click', async () => {
     upgradeBtn.parentNode.insertBefore(paypalContainer, upgradeBtn.nextSibling)
   }
   
-  // Render PayPal button
   paypal.Buttons({
+    style: { shape: 'rect', color: 'gold', layout: 'vertical', label: 'pay' },
     createOrder: function(data, actions) {
       return actions.order.create({
         purchase_units: [{
-          amount: {
-            value: '4.99',
-            currency_code: 'USD'
-          },
-          description: 'Pro Membership - Music Preview Platform'
-        }]
+          amount: { value: '4.99', currency_code: 'USD' },
+          description: 'VYNAL Pro - 30 Days Access',
+          custom_id: window.currentSession.user.id
+        }],
+        application_context: { shipping_preference: 'NO_SHIPPING' }
       })
     },
     onApprove: async function(data, actions) {
+      notify('Processing payment...', '#3b82f6')
       return actions.order.capture().then(async function(details) {
-        // Payment successful, upgrade user
         try {
-          const { error } = await supabase
+          const expiresAt = new Date()
+          expiresAt.setDate(expiresAt.getDate() + 30)
+          
+          const { error: profileError } = await supabase
             .from('profiles')
             .update({ 
               tier: 'pro',
               payment_id: details.id,
-              upgraded_at: new Date().toISOString()
+              upgraded_at: new Date().toISOString(),
+              pro_expires_at: expiresAt.toISOString()
             })
             .eq('id', window.currentSession.user.id)
           
-          if (error) throw error
+          if (profileError) throw profileError
           
-          notify('🎉 Payment successful! Upgrading to Pro...', '#10b981')
-          setTimeout(() => window.location.reload(), 1500)
+          await supabase.from('transactions').insert({
+            user_id: window.currentSession.user.id,
+            payment_id: details.id,
+            amount: 4.99,
+            currency: 'USD',
+            status: details.status,
+            payment_method: 'paypal',
+            created_at: new Date().toISOString()
+          })
+          
+          notify('🎉 Payment successful! You have Pro access for 30 days!', '#10b981')
+          setTimeout(() => window.location.reload(), 2000)
           
         } catch (error) {
-          notify('Upgrade failed. Please contact support.', '#ef4444')
+          notify('Payment received but upgrade failed. Contact support with ID: ' + details.id, '#ef4444')
           console.error('Upgrade error:', error)
         }
       })
@@ -838,6 +823,46 @@ document.getElementById('upgradeToPro').addEventListener('click', async () => {
   }).render('#paypal-button-container')
 })
 
+// Pro Expiration Checker
+const checkProExpiration = async (userId) => {
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('tier, pro_expires_at')
+    .eq('id', userId)
+    .single()
+  
+  if (profile.tier === 'pro' && profile.pro_expires_at) {
+    const expiresAt = new Date(profile.pro_expires_at)
+    const now = new Date()
+    
+    if (now > expiresAt) {
+      await supabase.from('profiles').update({ tier: 'free', pro_expires_at: null }).eq('id', userId)
+      notify('Your Pro access has expired. Renew to continue!', '#f59e0b')
+      setTimeout(() => window.location.reload(), 2000)
+    } else {
+      const daysRemaining = Math.ceil((expiresAt - now) / (1000 * 60 * 60 * 24))
+      if (daysRemaining <= 7) showRenewalReminder(daysRemaining)
+    }
+  }
+}
+
+const showRenewalReminder = (daysRemaining) => {
+  const reminderDiv = document.createElement('div')
+  reminderDiv.className = 'renewal-reminder'
+  reminderDiv.innerHTML = `
+    <div style="background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%); color: white; padding: 16px; border-radius: 12px; margin: 16px; text-align: center;">
+      <i class="ri-alarm-warning-fill" style="font-size: 24px;"></i>
+      <p style="margin: 8px 0; font-weight: 600;">Your Pro access expires in ${daysRemaining} day${daysRemaining !== 1 ? 's' : ''}!</p>
+      <button onclick="showPremiumBottomSheet()" class="btn primary" style="background: white; color: #ef4444; margin-top: 8px;">
+        Renew Now for $4.99
+      </button>
+    </div>
+  `
+  const container = document.querySelector('.main') || document.body
+  container.insertBefore(reminderDiv, container.firstChild)
+}
+
+// Auth & Pro Status
 const initAuth = async () => {
   const { data: { session } } = await supabase.auth.getSession()
   if (!session) return window.location.href = 'register'
@@ -846,15 +871,28 @@ const initAuth = async () => {
   
   window.currentUser = profile
   window.currentSession = session
-  isPro = profile.tier === 'pro'
+  
+  let isProActive = false
+  if (profile.tier === 'pro') {
+    if (profile.pro_expires_at) {
+      const expiresAt = new Date(profile.pro_expires_at)
+      isProActive = new Date() <= expiresAt
+      if (!isProActive) {
+        await supabase.from('profiles').update({ tier: 'free', pro_expires_at: null }).eq('id', session.user.id)
+        profile.tier = 'free'
+      }
+    } else {
+      isProActive = true
+    }
+  }
+  
+  isPro = isProActive
   
   if (!isPro) {
-    document.getElementById('accessBlocker').classList.add('active')
-    document.querySelector('.main').classList.add('blurred')
-    document.querySelector('.aside').classList.add('blurred')
-    document.querySelector('.header').classList.add('blurred')
+    document.getElementById('accessBlocker')?.classList.add('active')
+    document.querySelectorAll('.main, .aside, .header').forEach(el => el.classList.add('blurred'))
   } else {
-    document.getElementById('accessBlocker').remove()
+    document.getElementById('accessBlocker')?.remove()
   }
   
   document.querySelectorAll('.artist__name, .user-name').forEach(el => {
@@ -873,19 +911,10 @@ const initAuth = async () => {
   if (isPro) {
     document.querySelector('.upgrade-to-pro-btn')?.remove()
     document.querySelector('.limited-lock')?.remove()
-    document.querySelectorAll('.user-limits-card').forEach(el => el.classList.add('pro-user'))
-    document.querySelectorAll('.limits-header').forEach(el => el.classList.add('pro-user'))
-    
+    document.querySelectorAll('.user-limits-card, .limits-header').forEach(el => el.classList.add('pro-user'))
     const footer = document.getElementById('limitsFooter')
-    if (footer) {
-      footer.innerHTML = '<i class="ri-vip-crown-fill" style="color:#000000"></i><span style="color:#000000;font-weight:700">PRO Plan Active - Unlimited Everything!</span>'
-    }
-    
-    const blocker = document.getElementById('accessBlocker')
-    if (blocker) blocker.remove()
-    document.querySelector('.main')?.classList.remove('blurred')
-    document.querySelector('.aside')?.classList.remove('blurred')
-    document.querySelector('.header')?.classList.remove('blurred')
+    if (footer) footer.innerHTML = '<i class="ri-vip-crown-fill" style="color:#000000"></i><span style="color:#000000;font-weight:700">PRO Plan Active - Unlimited Everything!</span>'
+    document.querySelectorAll('.main, .aside, .header').forEach(el => el.classList.remove('blurred'))
   }
   
   return { session, profile }
@@ -898,55 +927,29 @@ const checkUserLimits = async (userId) => {
     .eq('id', userId)
     .single()
   
-  if (profile.tier === 'pro') {
-    return {
-      ...profile,
-      max_releases: 999999,
-      max_audio_previews: 999999,
-      edits_remaining: 999999,
-      max_edits: 999999
-    }
-  }
-  
-  return profile
+  return profile.tier === 'pro' ? {
+    ...profile,
+    max_releases: 999999,
+    max_audio_previews: 999999,
+    edits_remaining: 999999,
+    max_edits: 999999
+  } : profile
 }
 
 const canUpload = async (userId, type) => {
   if (isPro) return { allowed: true, message: 'Unlimited for PRO users' }
   
   const limits = await checkUserLimits(userId)
-  
-  if (type === 'release') {
-    if (limits.current_release_count >= limits.max_releases) {
-      return { 
-        allowed: false, 
-        message: `Release limit reached (${limits.max_releases} max). Upgrade to Pro for unlimited!`,
-        showUpgrade: true
-      }
-    }
+  const checks = {
+    release: () => limits.current_release_count >= limits.max_releases ? 
+      { allowed: false, message: `Release limit reached (${limits.max_releases} max). Upgrade to Pro!`, showUpgrade: true } : null,
+    audio: () => limits.current_audio_count >= limits.max_audio_previews ? 
+      { allowed: false, message: `Audio preview limit reached (${limits.max_audio_previews} max). Upgrade to Pro!`, showUpgrade: true } : null,
+    edit: () => limits.edits_remaining <= 0 ? 
+      { allowed: false, message: 'Edit limit reached. Upgrade to Pro!', showUpgrade: true } : null
   }
   
-  if (type === 'audio') {
-    if (limits.current_audio_count >= limits.max_audio_previews) {
-      return { 
-        allowed: false, 
-        message: `Audio preview limit reached (${limits.max_audio_previews} max). Upgrade to Pro!`,
-        showUpgrade: true
-      }
-    }
-  }
-  
-  if (type === 'edit') {
-    if (limits.edits_remaining <= 0) {
-      return { 
-        allowed: false, 
-        message: `Edit limit reached. Upgrade to Pro for unlimited edits!`,
-        showUpgrade: true
-      }
-    }
-  }
-  
-  return { allowed: true }
+  return checks[type]?.() || { allowed: true }
 }
 
 const uploadAudio = async (file, session) => {
@@ -978,52 +981,25 @@ const uploadAudio = async (file, session) => {
   return { url: data.publicUrl, duration }
 }
 
+// Social Links
 const getSocialLinks = async (userId) => {
   const { data } = await supabase.from('user_social_links').select('*').eq('user_id', userId)
   return data?.reduce((acc, l) => ({ ...acc, [l.platform]: { username: l.username, url: l.profile_url, verified: l.is_verified } }), {}) || {}
 }
 
 const saveSocialLink = async (platform, username, url, userId) => {
-  const { data: existing, error: selectError } = await supabase
-    .from('user_social_links')
-    .select('id')
-    .eq('user_id', userId)
-    .eq('platform', platform)
-    .maybeSingle()
-
-  if (selectError && selectError.code !== 'PGRST116') throw selectError
-
+  const { data: existing } = await supabase.from('user_social_links').select('id').eq('user_id', userId).eq('platform', platform).maybeSingle()
+  
+  const payload = { username, profile_url: url, updated_at: new Date().toISOString() }
+  
   if (existing) {
-    const { error: updateError } = await supabase
-      .from('user_social_links')
-      .update({
-        username,
-        profile_url: url,
-        updated_at: new Date().toISOString()
-      })
-      .eq('id', existing.id)
-    
-    if (updateError) throw updateError
+    await supabase.from('user_social_links').update(payload).eq('id', existing.id)
   } else {
-    const { error: insertError } = await supabase
-      .from('user_social_links')
-      .insert({
-        user_id: userId,
-        platform,
-        username,
-        profile_url: url,
-        updated_at: new Date().toISOString()
-      })
-    
-    if (insertError) throw insertError
+    await supabase.from('user_social_links').insert({ user_id: userId, platform, ...payload })
   }
 }
 
-const getListenerCount = async (previewId) => {
-  const { count } = await supabase.from('preview_listeners').select('*', { count: 'exact', head: true }).eq('preview_id', previewId)
-  return count || 0
-}
-
+// Analytics
 const getVisitorId = () => {
   let id = localStorage.getItem('vynal_visitor_id')
   if (!id) {
@@ -1050,44 +1026,24 @@ const trackListener = async (previewId, action, artistId) => {
     action_type: action, created_at: new Date().toISOString()
   })
 
-  const count = await getListenerCount(previewId)
+  const { count } = await supabase.from('preview_listeners').select('*', { count: 'exact', head: true }).eq('preview_id', previewId)
   const el = document.querySelector(`[data-preview-id="${previewId}"] .listener-count`)
-  if (el) el.textContent = count
+  if (el) el.textContent = count || 0
   
   if (window.currentSession?.user?.id) setupAdvancedAnalytics(window.currentSession.user.id)
 }
 
-const getAnalyticsData = async (userId) => {
-  const { data: previews } = await supabase
-    .from('music_previews')
-    .select('id, platform, release_name, created_at')
-    .eq('user_id', userId)
-    .eq('is_active', true)
-
-  const { data: listeners } = await supabase
-    .from('preview_listeners')
-    .select('preview_id, action_type, created_at')
-    .eq('artist_id', userId)
-
-  return { previews: previews || [], listeners: listeners || [] }
-}
-
 const setupAdvancedAnalytics = async (userId) => {
-  const { previews, listeners } = await getAnalyticsData(userId)
+  const { data: previews } = await supabase.from('music_previews').select('id, platform, release_name, created_at').eq('user_id', userId).eq('is_active', true)
+  const { data: listeners } = await supabase.from('preview_listeners').select('preview_id, action_type, created_at').eq('artist_id', userId)
   
   const platformCounts = { youtube: 0, instagram: 0, spotify: 0, apple_music: 0 }
-  const platformActions = { 
-    youtube: { play: 0, click: 0 }, 
-    instagram: { play: 0, click: 0 }, 
-    spotify: { play: 0, click: 0 }, 
-    apple_music: { play: 0, click: 0 } 
-  }
+  const platformActions = { youtube: { play: 0, click: 0 }, instagram: { play: 0, click: 0 }, spotify: { play: 0, click: 0 }, apple_music: { play: 0, click: 0 } }
   
-  previews.forEach(p => {
-    const previewListeners = listeners.filter(l => l.preview_id === p.id)
-    platformCounts[p.platform] = (platformCounts[p.platform] || 0) + previewListeners.length
-    
-    previewListeners.forEach(l => {
+  previews?.forEach(p => {
+    const pListeners = listeners?.filter(l => l.preview_id === p.id) || []
+    platformCounts[p.platform] = (platformCounts[p.platform] || 0) + pListeners.length
+    pListeners.forEach(l => {
       if (l.action_type === 'play') platformActions[p.platform].play++
       else if (l.action_type === 'click') platformActions[p.platform].click++
     })
@@ -1099,418 +1055,81 @@ const setupAdvancedAnalytics = async (userId) => {
     return d.toISOString().split('T')[0]
   })
 
-  const dailyListeners = last7Days.map(date => {
-    return listeners.filter(l => l.created_at.startsWith(date)).length
-  })
+  const dailyListeners = last7Days.map(date => listeners?.filter(l => l.created_at.startsWith(date)).length || 0)
+  const dailyPlays = last7Days.map(date => listeners?.filter(l => l.created_at.startsWith(date) && l.action_type === 'play').length || 0)
+  const dailyClicks = last7Days.map(date => listeners?.filter(l => l.created_at.startsWith(date) && l.action_type === 'click').length || 0)
 
-  const dailyPlays = last7Days.map(date => {
-    return listeners.filter(l => l.created_at.startsWith(date) && l.action_type === 'play').length
-  })
-
-  const dailyClicks = last7Days.map(date => {
-    return listeners.filter(l => l.created_at.startsWith(date) && l.action_type === 'click').length
-  })
-
-  const totalPlays = listeners.filter(l => l.action_type === 'play').length
-  const totalClicks = listeners.filter(l => l.action_type === 'click').length
-
-  const releaseStats = previews.map(p => {
-    const previewListeners = listeners.filter(l => l.preview_id === p.id)
-    return {
-      name: p.release_name,
-      platform: p.platform,
-      listeners: previewListeners.length,
-      plays: previewListeners.filter(l => l.action_type === 'play').length,
-      clicks: previewListeners.filter(l => l.action_type === 'click').length
-    }
-  }).sort((a, b) => b.listeners - a.listeners).slice(0, 5)
-
-  renderPlatformChart(platformCounts)
-  renderTimelineChart(last7Days, dailyListeners, dailyPlays, dailyClicks)
-  renderActionChart(totalPlays, totalClicks)
-  renderPlatformActionChart(platformActions)
-  renderTopReleasesChart(releaseStats)
-  renderEngagementStats(listeners, previews)
+  renderCharts(platformCounts, last7Days, dailyListeners, dailyPlays, dailyClicks, listeners || [], previews || [])
 }
 
-const renderPlatformChart = (platformCounts) => {
-  const ctx = document.getElementById('platformChart')
-  if (!ctx) return
-
-  ctx.style.marginBottom = '30px'
-  ctx.style.display = 'block'
-
-  if (analyticsCharts.platform) analyticsCharts.platform.destroy()
-
-  analyticsCharts.platform = new Chart(ctx, {
-    type: 'doughnut',
-    data: {
-      labels: ['YouTube', 'Instagram', 'Spotify', 'Apple Music'],
-      datasets: [{
-        data: [
-          platformCounts.youtube,
-          platformCounts.instagram,
-          platformCounts.spotify,
-          platformCounts.apple_music
-        ],
-        backgroundColor: ['#FF0000', '#E4405F', '#1DB954', '#ffffff'],
-        borderWidth: 0
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      aspectRatio: 1.5,
-      plugins: {
-        legend: {
-          position: 'bottom',
-          labels: { color: '#fff', padding: 15, font: { size: 12 } }
-        },
-        title: {
-          display: true,
-          text: 'Listeners by Platform',
-          color: '#fff',
-          font: { size: 16, weight: 'bold' },
-          padding: { bottom: 20 }
-        }
-      }
-    }
-  })
-}
-
-const renderTimelineChart = (labels, listeners, plays, clicks) => {
-  const ctx = document.getElementById('timelineChart')
-  if (!ctx) return
-
-  ctx.style.marginBottom = '30px'
-  ctx.style.display = 'block'
-
-  if (analyticsCharts.timeline) analyticsCharts.timeline.destroy()
-
-  analyticsCharts.timeline = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: labels.map(d => new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })),
-      datasets: [
-        {
-          label: 'Total Listeners',
-          data: listeners,
-          borderColor: '#667eea',
-          backgroundColor: 'rgba(102, 126, 234, 0.1)',
-          tension: 0.4,
-          fill: true
-        },
-        {
-          label: 'Audio Plays',
-          data: plays,
-          borderColor: '#1DB954',
-          backgroundColor: 'rgba(29, 185, 84, 0.1)',
-          tension: 0.4,
-          fill: true
-        },
-        {
-          label: 'Link Clicks',
-          data: clicks,
-          borderColor: '#E4405F',
-          backgroundColor: 'rgba(228, 64, 95, 0.1)',
-          tension: 0.4,
-          fill: true
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      aspectRatio: 2,
-      interaction: { mode: 'index', intersect: false },
-      plugins: {
-        legend: {
-          position: 'top',
-          labels: { color: '#fff', padding: 15, font: { size: 12 } }
-        },
-        title: {
-          display: true,
-          text: '7-Day Activity Trend',
-          color: '#fff',
-          font: { size: 16, weight: 'bold' },
-          padding: { bottom: 20 }
-        }
+const renderCharts = (platformCounts, labels, dailyListeners, dailyPlays, dailyClicks, listeners, previews) => {
+  // Platform Chart
+  const ctx1 = document.getElementById('platformChart')
+  if (ctx1) {
+    if (analyticsCharts.platform) analyticsCharts.platform.destroy()
+    analyticsCharts.platform = new Chart(ctx1, {
+      type: 'doughnut',
+      data: {
+        labels: ['YouTube', 'Instagram', 'Spotify', 'Apple Music'],
+        datasets: [{ data: [platformCounts.youtube, platformCounts.instagram, platformCounts.spotify, platformCounts.apple_music], backgroundColor: ['#FF0000', '#E4405F', '#1DB954', '#ffffff'], borderWidth: 0 }]
       },
-      scales: {
-        y: {
-          beginAtZero: true,
-          ticks: { color: '#888', stepSize: 1 },
-          grid: { color: 'rgba(255, 255, 255, 0.05)' }
-        },
-        x: {
-          ticks: { color: '#888' },
-          grid: { color: 'rgba(255, 255, 255, 0.05)' }
-        }
-      }
-    }
-  })
-}
-
-const renderActionChart = (plays, clicks) => {
-  const ctx = document.getElementById('actionChart')
-  if (!ctx) return
-
-  ctx.style.marginBottom = '30px'
-  ctx.style.display = 'block'
-
-  if (analyticsCharts.action) analyticsCharts.action.destroy()
-
-  analyticsCharts.action = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: ['Audio Plays', 'Link Clicks'],
-      datasets: [{
-        label: 'Actions',
-        data: [plays, clicks],
-        backgroundColor: ['#1DB954', '#E4405F'],
-        borderRadius: 8,
-        barThickness: 80
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      aspectRatio: 2,
-      plugins: {
-        legend: { display: false },
-        title: {
-          display: true,
-          text: 'Action Type Breakdown',
-          color: '#fff',
-          font: { size: 16, weight: 'bold' },
-          padding: { bottom: 20 }
-        }
-      },
-      scales: {
-        y: {
-          beginAtZero: true,
-          ticks: { color: '#888', stepSize: 1 },
-          grid: { color: 'rgba(255, 255, 255, 0.05)' }
-        },
-        x: {
-          ticks: { color: '#fff', font: { size: 13, weight: 'bold' } },
-          grid: { display: false }
-        }
-      }
-    }
-  })
-}
-
-const renderPlatformActionChart = (platformActions) => {
-  const ctx = document.getElementById('platformActionChart')
-  if (!ctx) return
-
-  ctx.style.marginBottom = '30px'
-  ctx.style.display = 'block'
-  if (analyticsCharts.platformAction) analyticsCharts.platformAction.destroy()
-
-  analyticsCharts.platformAction = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: ['YouTube', 'Instagram', 'Spotify', 'Apple Music'],
-      datasets: [
-        {
-          label: 'Audio Plays',
-          data: [
-            platformActions.youtube.play,
-            platformActions.instagram.play,
-            platformActions.spotify.play,
-            platformActions.apple_music.play
-          ],
-          backgroundColor: '#1DB954',
-          borderRadius: 8
-        },
-        {
-          label: 'Link Clicks',
-          data: [
-            platformActions.youtube.click,
-            platformActions.instagram.click,
-            platformActions.spotify.click,
-            platformActions.apple_music.click
-          ],
-          backgroundColor: '#E4405F',
-          borderRadius: 8
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      aspectRatio: 2,
-      plugins: {
-        legend: {
-          position: 'top',
-          labels: { color: '#fff', padding: 15, font: { size: 12 } }
-        },
-        title: {
-          display: true,
-          text: 'Platform Actions Comparison',
-          color: '#fff',
-          font: { size: 16, weight: 'bold' },
-          padding: { bottom: 20 }
-        }
-      },
-      scales: {
-        y: {
-          beginAtZero: true,
-          stacked: true,
-          ticks: { color: '#888', stepSize: 1 },
-          grid: { color: 'rgba(255, 255, 255, 0.05)' }
-        },
-        x: {
-          stacked: true,
-          ticks: { color: '#888' },
-          grid: { display: false }
-        }
-      }
-    }
-  })
-}
-
-const renderTopReleasesChart = (releaseStats) => {
-  const ctx = document.getElementById('topReleasesChart')
-  if (!ctx) return
-
-  ctx.style.marginBottom = '30px'
-  ctx.style.display = 'block'
-
-  if (analyticsCharts.topReleases) analyticsCharts.topReleases.destroy()
-
-  const platformColors = {
-    youtube: '#FF0000',
-    instagram: '#E4405F',
-    spotify: '#1DB954',
-    apple_music: 'white'
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { color: '#fff' } }, title: { display: true, text: 'Listeners by Platform', color: '#fff' } } }
+    })
   }
 
-  analyticsCharts.topReleases = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: releaseStats.map(r => r.name.length > 20 ? r.name.substring(0, 20) + '...' : r.name),
-      datasets: [{
-        label: 'Total Listeners',
-        data: releaseStats.map(r => r.listeners),
-        backgroundColor: releaseStats.map(r => platformColors[r.platform]),
-        borderRadius: 8
-      }]
-    },
-    options: {
-      indexAxis: 'y',
-      responsive: true,
-      maintainAspectRatio: false,
-      aspectRatio: 1.5,
-      plugins: {
-        legend: { display: false },
-        title: {
-          display: true,
-          text: 'Top 5 Releases',
-          color: '#fff',
-          font: { size: 16, weight: 'bold' },
-          padding: { bottom: 20 }
-        }
+  // Timeline Chart
+  const ctx2 = document.getElementById('timelineChart')
+  if (ctx2) {
+    if (analyticsCharts.timeline) analyticsCharts.timeline.destroy()
+    analyticsCharts.timeline = new Chart(ctx2, {
+      type: 'line',
+      data: {
+        labels: labels.map(d => new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })),
+        datasets: [
+          { label: 'Total Listeners', data: dailyListeners, borderColor: '#667eea', backgroundColor: 'rgba(102, 126, 234, 0.1)', tension: 0.4, fill: true },
+          { label: 'Audio Plays', data: dailyPlays, borderColor: '#1DB954', backgroundColor: 'rgba(29, 185, 84, 0.1)', tension: 0.4, fill: true },
+          { label: 'Link Clicks', data: dailyClicks, borderColor: '#E4405F', backgroundColor: 'rgba(228, 64, 95, 0.1)', tension: 0.4, fill: true }
+        ]
       },
-      scales: {
-        x: {
-          beginAtZero: true,
-          ticks: { color: '#888', stepSize: 1 },
-          grid: { color: 'rgba(255, 255, 255, 0.05)' }
-        },
-        y: {
-          ticks: { color: '#fff', font: { size: 11 } },
-          grid: { display: false }
-        }
-      }
-    }
-  })
-}
+      options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { color: '#888' }, grid: { color: 'rgba(255, 255, 255, 0.05)' } }, x: { ticks: { color: '#888' } } } }
+    })
+  }
 
-const renderEngagementStats = (listeners, previews) => {
+  // Engagement Stats
   const container = document.getElementById('engagementStats')
-  if (!container) return
-
-  const totalListeners = listeners.length
-  const uniqueVisitors = new Set(listeners.map(l => l.visitor_id)).size
-  const avgListenersPerRelease = previews.length > 0 ? (totalListeners / previews.length).toFixed(1) : 0
-  const totalPlays = listeners.filter(l => l.action_type === 'play').length
-  const totalClicks = listeners.filter(l => l.action_type === 'click').length
-  const playRate = totalListeners > 0 ? ((totalPlays / totalListeners) * 100).toFixed(1) : 0
-  const clickRate = totalListeners > 0 ? ((totalClicks / totalListeners) * 100).toFixed(1) : 0
-
-  container.style.display = 'grid'
-  container.style.gridTemplateColumns = 'repeat(auto-fit, minmax(180px, 1fr))'
-  container.style.gap = '15px'
-  container.style.marginTop = '20px'
-
-  container.innerHTML = `
-    <div class="stat-card" style="background: rgba(255,255,255,0.05); border-radius: 12px; padding: 16px; display: flex; align-items: center; gap: 12px;">
-  <div style="width: 48px; height: 48px; border-radius: 12px; background: var(--brand); display: flex; align-items: center; justify-content: center; font-size: 20px; color: white; flex-shrink: 0;">
-    <i class="ri-user-line"></i>
-  </div>
-  <div>
-    <div style="font-size: 24px; font-weight: 700; color: white;">${totalListeners}</div>
-    <div style="font-size: 11px; color: #999; margin-top: 2px;">Total Listeners</div>
-  </div>
-</div>
-
-<div class="stat-card" style="background: rgba(255,255,255,0.05); border-radius: 12px; padding: 16px; display: flex; align-items: center; gap: 12px;">
-  <div style="width: 48px; height: 48px; border-radius: 12px; background: var(--brand); display: flex; align-items: center; justify-content: center; font-size: 20px; color: white; flex-shrink: 0;">
-    <i class="ri-team-line"></i>
-  </div>
-  <div>
-    <div style="font-size: 24px; font-weight: 700; color: white;">${uniqueVisitors}</div>
-    <div style="font-size: 11px; color: #999; margin-top: 2px;">Unique Visitors</div>
-  </div>
-</div>
-
-<div class="stat-card" style="background: rgba(255,255,255,0.05); border-radius: 12px; padding: 16px; display: flex; align-items: center; gap: 12px;">
-  <div style="width: 48px; height: 48px; border-radius: 12px; background: var(--brand); display: flex; align-items: center; justify-content: center; font-size: 20px; color: white; flex-shrink: 0;">
-    <i class="ri-bar-chart-box-line"></i>
-  </div>
-  <div>
-    <div style="font-size: 24px; font-weight: 700; color: white;">${avgListenersPerRelease}</div>
-    <div style="font-size: 11px; color: #999; margin-top: 2px;">Avg Per Release</div>
-  </div>
-</div>
-
-<div class="stat-card" style="background: rgba(255,255,255,0.05); border-radius: 12px; padding: 16px; display: flex; align-items: center; gap: 12px;">
-  <div style="width: 48px; height: 48px; border-radius: 12px; background: var(--brand); display: flex; align-items: center; justify-content: center; font-size: 20px; color: white; flex-shrink: 0;">
-    <i class="ri-play-circle-line"></i>
-  </div>
-  <div>
-    <div style="font-size: 24px; font-weight: 700; color: white;">${totalPlays}</div>
-    <div style="font-size: 11px; color: #999; margin-top: 2px;">Total Plays</div>
-    <div style="font-size: 10px; color: #667eea; margin-top: 2px;">${playRate}% play rate</div>
-  </div>
-</div>
-
-<div class="stat-card" style="background: rgba(255,255,255,0.05); border-radius: 12px; padding: 16px; display: flex; align-items: center; gap: 12px;">
-  <div style="width: 48px; height: 48px; border-radius: 12px; background: var(--brand); display: flex; align-items: center; justify-content: center; font-size: 20px; color: white; flex-shrink: 0;">
-    <i class="ri-links-line"></i>
-  </div>
-  <div>
-    <div style="font-size: 24px; font-weight: 700; color: white;">${totalClicks}</div>
-    <div style="font-size: 11px; color: #999; margin-top: 2px;">Link Clicks</div>
-    <div style="font-size: 10px; color: #667eea; margin-top: 2px;">${clickRate}% click rate</div>
-  </div>
-</div>
-
-<div class="stat-card" style="background: rgba(255,255,255,0.05); border-radius: 12px; padding: 16px; display: flex; align-items: center; gap: 12px;">
-  <div style="width: 48px; height: 48px; border-radius: 12px; background: var(--brand); display: flex; align-items: center; justify-content: center; font-size: 20px; color: white; flex-shrink: 0;">
-    <i class="ri-music-2-line"></i>
-  </div>
-  <div>
-    <div style="font-size: 24px; font-weight: 700; color: white;">${previews.length}</div>
-    <div style="font-size: 11px; color: #999; margin-top: 2px;">Active Releases</div>
-  </div>
-</div>
-  `
+  if (container) {
+    const totalListeners = listeners.length
+    const uniqueVisitors = new Set(listeners.map(l => l.visitor_id)).size
+    const avgListenersPerRelease = previews.length > 0 ? (totalListeners / previews.length).toFixed(1) : 0
+    const totalPlays = listeners.filter(l => l.action_type === 'play').length
+    const totalClicks = listeners.filter(l => l.action_type === 'click').length
+    
+    container.innerHTML = `
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-top: 20px;">
+        ${[
+          { icon: 'ri-user-line', value: totalListeners, label: 'Total Listeners' },
+          { icon: 'ri-team-line', value: uniqueVisitors, label: 'Unique Visitors' },
+          { icon: 'ri-bar-chart-box-line', value: avgListenersPerRelease, label: 'Avg Per Release' },
+          { icon: 'ri-play-circle-line', value: totalPlays, label: 'Total Plays' },
+          { icon: 'ri-links-line', value: totalClicks, label: 'Link Clicks' },
+          { icon: 'ri-music-2-line', value: previews.length, label: 'Active Releases' }
+        ].map(stat => `
+          <div style="background: rgba(255,255,255,0.05); border-radius: 12px; padding: 16px; display: flex; align-items: center; gap: 12px;">
+            <div style="width: 48px; height: 48px; border-radius: 12px; background: var(--brand); display: flex; align-items: center; justify-content: center; font-size: 20px; color: white;">
+              <i class="${stat.icon}"></i>
+            </div>
+            <div>
+              <div style="font-size: 24px; font-weight: 700; color: white;">${stat.value}</div>
+              <div style="font-size: 11px; color: #999; margin-top: 2px;">${stat.label}</div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `
+  }
 }
 
+// Platform Config
 const platformConfig = {
   youtube: { icon: 'ri-youtube-fill', name: 'YouTube', color: '#FF0000' },
   instagram: { icon: 'ri-instagram-fill', name: 'Instagram', color: '#E4405F' },
@@ -1518,71 +1137,7 @@ const platformConfig = {
   apple_music: { icon: 'ri-apple-fill', name: 'Apple Music', color: '#ffffff' }
 }
 
-const buildPreviewCard = (preview) => {
-  const cfg = platformConfig[preview.platform]
-  const thumb = preview.thumbnail_url || window.currentUser?.profile_picture || 'user.webp'
-  const name = window.currentUser?.stage_name || 'Artist'
-
-  const canEdit = isPro || window.currentUserLimits?.edits_remaining > 0
-
-  return `
-    <div class="span-12 preview-card" data-preview-id="${preview.id}" data-animate>
-      <div class="my-post-card" data-animate>
-        <div class="post-header post-header-dark">
-          <div class="post-header-left">
-            <img src="${thumb}" class="preview-thumbnail">
-            <div class="post-header-info">
-              <strong>${name}</strong>
-              <div class="muted"><a href="${preview.release_url}" target="_blank">View release</a></div>
-            </div>
-          </div>
-          <div class="post-header-right">
-            ${canEdit ? `
-              <button class="btn ghost edit-preview-btn" data-preview-id="${preview.id}" title="Edit release">
-                <i class="ri-edit-line ri-xl edit-icon"></i>
-              </button>
-            ` : ''}
-            <button class="btn ghost delete-preview-btn" data-preview-id="${preview.id}" title="Delete release">
-              <i class="ri-delete-bin-line ri-xl delete-icon"></i>
-            </button>
-            <a href="${preview.release_url}" target="_blank">
-              <button class="btn-icon platform-icon-btn" title="Open ${cfg.name}">
-                <i class="${cfg.icon} ri-xl"></i>
-              </button>
-            </a>
-          </div>
-        </div>
-        ${preview.preview_audio_url ? `
-          <div class="d-post-body audio-preview-body">
-            <div class="custom-audio-player" data-audio-src="${preview.preview_audio_url}" data-preview-id="${preview.id}">
-              <audio style="display:none;"><source src="${preview.preview_audio_url}"></audio>
-              <div class="audio-controls">
-                <button class="play-pause-btn">
-                  <i class="ri-play-fill play-icon"></i>
-                </button>
-                <div class="audio-info">
-                  <div class="audio-title">${preview.release_name}</div>
-                  <div class="audio-artist">${name}</div>
-                </div>
-                <div class="time-display">0:00 / ${formatTime(preview.duration_seconds||0)}</div>
-              </div>
-              <div class="waveform-container">
-                <canvas class="waveform-canvas"></canvas>
-                <div class="progress-overlay"></div>
-              </div>
-            </div>
-          </div>
-        ` : `<div class="d-post-body release-name-only"><a class="t-400">${preview.release_name}</a></div>`}
-        <div class="row preview-stats">
-          <div class="col-4"><div class="muted t-s">Listeners</div><div class="nowrap t-800 listener-count">0</div></div>
-          <div class="col-34"><div class="muted t-s">Duration</div><div class="t-800">${formatTime(preview.duration_seconds||0)}</div></div>
-          <div class="col-4"><div><span class="t-600 t-sm platform-tag">${cfg.name.toUpperCase()}</span></div><div class="muted t-s">Platform</div></div>
-        </div>
-      </div>
-    </div>
-  `
-}
-
+// Audio Player
 const initAudioPlayer = (container, previewId) => {
   const player = container.querySelector('.custom-audio-player')
   if (!player) return
@@ -1591,26 +1146,7 @@ const initAudioPlayer = (container, previewId) => {
   const btn = player.querySelector('.play-pause-btn')
   const icon = btn.querySelector('i')
   const time = player.querySelector('.time-display')
-  const wave = player.querySelector('.waveform-container')
-  const canvas = player.querySelector('.waveform-canvas')
   const progress = player.querySelector('.progress-overlay')
-  const ctx = canvas.getContext('2d')
-
-  canvas.width = wave.offsetWidth
-  canvas.height = 60
-
-  const drawWaveform = () => {
-    ctx.clearRect(0, 0, canvas.width, 60)
-    for (let i = 0; i < 100; i++) {
-      const h = Math.random() * 48 + 6
-      const x = i * (canvas.width / 100)
-      const y = (60 - h) / 2
-      ctx.fillStyle = 'rgba(255,255,255,0.3)'
-      ctx.fillRect(x, y, (canvas.width / 100) - 2, h)
-    }
-  }
-
-  drawWaveform()
 
   let tracked = false
   btn.onclick = async () => {
@@ -1618,14 +1154,11 @@ const initAudioPlayer = (container, previewId) => {
       document.querySelectorAll('audio').forEach(a => {
         if (a !== audio) {
           a.pause()
-          const otherIcon = a.closest('.custom-audio-player')?.querySelector('.play-pause-btn i')
-          if (otherIcon) otherIcon.className = 'ri-play-fill play-icon'
-          a.closest('.custom-audio-player')?.querySelector('.play-pause-btn')?.classList.remove('playing')
+          a.closest('.custom-audio-player')?.querySelector('.play-pause-btn i')?.setAttribute('class', 'ri-play-fill play-icon')
         }
       })
       audio.play()
       icon.className = 'ri-pause-fill play-icon'
-      btn.classList.add('playing')
       if (!tracked && window.currentSession?.user?.id) {
         await trackListener(previewId, 'play', window.currentSession.user.id)
         tracked = true
@@ -1633,7 +1166,6 @@ const initAudioPlayer = (container, previewId) => {
     } else {
       audio.pause()
       icon.className = 'ri-play-fill play-icon'
-      btn.classList.remove('playing')
     }
   }
 
@@ -1642,30 +1174,18 @@ const initAudioPlayer = (container, previewId) => {
     progress.style.width = ((audio.currentTime / audio.duration) * 100) + '%'
   }
 
-  wave.onclick = (e) => {
-    const rect = wave.getBoundingClientRect()
-    audio.currentTime = ((e.clientX - rect.left) / rect.width) * audio.duration
-  }
-
   audio.onended = () => {
     icon.className = 'ri-play-fill play-icon'
-    btn.classList.remove('playing')
     progress.style.width = '0%'
   }
-
-  window.addEventListener('resize', () => {
-    canvas.width = wave.offsetWidth
-    drawWaveform()
-  })
 }
 
+// Load Previews
 const loadPreviews = async (userId) => {
   const container = document.getElementById('releasesContainer')
   if (!container) return
 
-  const limits = await checkUserLimits(userId)
-  window.currentUserLimits = limits
-
+  window.currentUserLimits = await checkUserLimits(userId)
   const { data: previews } = await supabase.from('music_previews').select('*').eq('user_id', userId).eq('is_active', true).order('created_at', { ascending: false })
 
   if (!previews?.length) {
@@ -1675,12 +1195,6 @@ const loadPreviews = async (userId) => {
           <img src="pro.svg" alt="No Releases" class="no-releases-image" />
           <h3 class="no-releases-title">No Releases Yet</h3>
           <p class="no-releases-text">Start sharing your music by adding your first release above.</p>
-          <div class="platform-grid">
-            <div class="platform-item"><i class="ri-spotify-fill platform-spotify"></i><div>Spotify</div></div>
-            <div class="platform-item"><i class="ri-youtube-fill platform-youtube"></i><div>YouTube</div></div>
-            <div class="platform-item"><i class="ri-instagram-fill platform-instagram"></i><div>Instagram</div></div>
-            <div class="platform-item"><i class="ri-apple-fill platform-apple"></i><div>Apple Music</div></div>
-          </div>
         </div>
       </div>
     `
@@ -1689,13 +1203,10 @@ const loadPreviews = async (userId) => {
 
   const links = await getSocialLinks(userId)
   const grouped = previews.reduce((acc, p) => ({ ...acc, [p.platform]: [...(acc[p.platform]||[]), p] }), {})
-
   container.innerHTML = ''
 
   Object.entries(grouped).forEach(([platform, items]) => {
     const cfg = platformConfig[platform]
-    const username = links[platform]?.username || window.currentUser?.stage_name || 'Artist'
-
     const section = document.createElement('div')
     section.className = 'posts span-4'
     section.innerHTML = `
@@ -1703,23 +1214,7 @@ const loadPreviews = async (userId) => {
         <div class="post-header platform-post-header">
           <div class="post-header-left">
             <span><i class="${cfg.icon} ri-xl" style="color:${cfg.color};"></i></span>
-            <div class="post-header-info">
-              <strong><a>${cfg.name}</a><a class="t-sm t-400">@${username}</a></strong>
-              <div class="muted"><a class="profile">Available here!</a></div>
-            </div>
-          </div>
-          <div class="post-header-right">
-            <a href="${links[platform]?.url||'#'}" target="_blank">
-              <button class="btn primary external-link-btn" title="Visit ${cfg.name}">
-                <i class="ri-external-link-line ri-xl"></i>
-              </button>
-            </a>
-            <button class="btn primary platform-share-btn" data-platform="${platform}" data-username="${username}" title="Copy ${cfg.name} link">
-              <i class="ri-share-line ri-xl"></i>
-            </button>
-            <button class="btn primary platform-delete-all-btn" data-platform="${platform}" data-count="${items.length}" title="Delete all ${cfg.name} releases">
-              <i class="ri-delete-bin-line ri-xl"></i>
-            </button>
+            <div class="post-header-info"><strong>${cfg.name}</strong></div>
           </div>
         </div>
       </div>
@@ -1728,7 +1223,45 @@ const loadPreviews = async (userId) => {
 
     const grid = section.querySelector('.platform-releases-grid')
     items.forEach(p => {
-      grid.insertAdjacentHTML('beforeend', buildPreviewCard(p))
+      const canEdit = isPro || window.currentUserLimits?.edits_remaining > 0
+      grid.insertAdjacentHTML('beforeend', `
+        <div class="span-12 preview-card" data-preview-id="${p.id}">
+          <div class="my-post-card">
+            <div class="post-header post-header-dark">
+              <div class="post-header-left">
+                <img src="${p.thumbnail_url || window.currentUser?.profile_picture || 'user.webp'}" class="preview-thumbnail">
+                <div class="post-header-info">
+                  <strong>${window.currentUser?.stage_name || 'Artist'}</strong>
+                  <div class="muted"><a href="${p.release_url}" target="_blank">View release</a></div>
+                </div>
+              </div>
+              <div class="post-header-right">
+                ${canEdit ? `<button class="btn ghost edit-preview-btn" data-preview-id="${p.id}"><i class="ri-edit-line ri-xl"></i></button>` : ''}
+                <button class="btn ghost delete-preview-btn" data-preview-id="${p.id}"><i class="ri-delete-bin-line ri-xl"></i></button>
+              </div>
+            </div>
+            ${p.preview_audio_url ? `
+              <div class="d-post-body audio-preview-body">
+                <div class="custom-audio-player" data-preview-id="${p.id}">
+                  <audio style="display:none;"><source src="${p.preview_audio_url}"></audio>
+                  <div class="audio-controls">
+                    <button class="play-pause-btn"><i class="ri-play-fill play-icon"></i></button>
+                    <div class="audio-info">
+                      <div class="audio-title">${p.release_name}</div>
+                    </div>
+                    <div class="time-display">0:00 / ${formatTime(p.duration_seconds||0)}</div>
+                  </div>
+                  <div class="progress-overlay"></div>
+                </div>
+              </div>
+            ` : `<div class="d-post-body">${p.release_name}</div>`}
+            <div class="row preview-stats">
+              <div class="col-4"><div class="muted t-s">Listeners</div><div class="listener-count">0</div></div>
+              <div class="col-4"><div class="muted t-s">Duration</div><div>${formatTime(p.duration_seconds||0)}</div></div>
+            </div>
+          </div>
+        </div>
+      `)
       setTimeout(() => {
         const card = grid.querySelector(`[data-preview-id="${p.id}"]`)
         if (p.preview_audio_url) initAudioPlayer(card, p.id)
@@ -1739,646 +1272,90 @@ const loadPreviews = async (userId) => {
   })
 
   previews.forEach(async p => {
-    const count = await getListenerCount(p.id)
+    const { count } = await supabase.from('preview_listeners').select('*', { count: 'exact', head: true }).eq('preview_id', p.id)
     const el = document.querySelector(`[data-preview-id="${p.id}"] .listener-count`)
-    if (el) el.textContent = count
-  })
-
-  displayPlatformIcons(Object.keys(grouped))
-}
-
-const displayPlatformIcons = (platforms) => {
-  const icons = document.querySelector('.artist__icons')
-  if (!icons) return
-
-  icons.innerHTML = ''
-  
-  const uniquePlatforms = [...new Set(platforms)]
-  
-  uniquePlatforms.forEach(platform => {
-    const cfg = platformConfig[platform]
-    if (!cfg) return
-    
-    const iconWrapper = document.createElement('div')
-    iconWrapper.style.display = 'inline-block'
-    
-    const i = document.createElement('i')
-    i.className = cfg.icon
-    i.style.color = cfg.color
-    i.title = cfg.name
-    
-    iconWrapper.appendChild(i)
-    icons.appendChild(iconWrapper)
+    if (el) el.textContent = count || 0
   })
 }
 
-const setupEditModal = (session) => {
-  const modal = document.createElement('div')
-  modal.id = 'editModal'
-  modal.className = 'modal-overlay'
-  modal.innerHTML = `
-    <div class="modal-content-edit">
-      <div class="modal-header">
-        <h3 class="modal-title">Edit Release</h3>
-        <button id="editModalClose" class="modal-close-btn"><i class="ri-close-line"></i></button>
-      </div>
-      <form id="editForm">
-        <div class="form-group">
-          <label class="form-label">Platform</label>
-          <div class="custom-select-edit">
-            <div class="select-selected-edit btn ghost t-sm" style="background: none;color: white">Select Platform</div>
-            <div class="select-items-edit" style="display:grid;grid-template-columns:repeat(auto-fit, minmax(140px, 1fr));gap:12px;padding-top:10px;">
-              <div data-platform="youtube" style="display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:10px;cursor:pointer;background:rgba(255,255,255,0.04);transition:all .25s ease;" onmouseover="this.style.background='rgba(255,0,0,0.12)'" onmouseout="this.style.background='rgba(255,255,255,0.04)'">
-                <i class="ri-youtube-fill" style="font-size:20px;color:#ff0000;"></i>
-                <span>YouTube</span>
-              </div>
-              <div data-platform="instagram" style="display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:10px;cursor:pointer;background:rgba(255,255,255,0.04);transition:all .25s ease;" onmouseover="this.style.background='rgba(225,48,108,0.15)'" onmouseout="this.style.background='rgba(255,255,255,0.04)'">
-                <i class="ri-instagram-fill" style="font-size:20px;color:#e1306c;"></i>
-                <span>Instagram</span>
-              </div>
-              <div data-platform="spotify" style="display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:10px;cursor:pointer;background:rgba(255,255,255,0.04);transition:all .25s ease;" onmouseover="this.style.background='rgba(30,215,96,0.15)'" onmouseout="this.style.background='rgba(255,255,255,0.04)'">
-                <i class="ri-spotify-fill" style="font-size:20px;color:white;"></i>
-                <span>Spotify</span>
-              </div>
-              <div data-platform="apple_music" style="display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:10px;cursor:pointer;background:rgba(255,255,255,0.04);transition:all .25s ease;" onmouseover="this.style.background='rgba(255,45,85,0.15)'" onmouseout="this.style.background='rgba(255,255,255,0.04)'">
-                <i class="ri-apple-fill" style="font-size:20px;color:#ff2d55;"></i>
-                <span>Apple Music</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Username</label>
-          <input id="editUsername" type="text" class="form-input" placeholder="Your username">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Release Name</label>
-          <input id="editReleaseName" type="text" class="form-input" placeholder="Release name">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Release URL</label>
-          <input id="editReleaseUrl" type="text" class="form-input" placeholder="https://...">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Audio Preview (Optional)</label>
-          <div id="editDropzone" class="dropzone"><i class="ri-upload-cloud-2-line"></i> Drop new audio or <u>browse</u></div>
-          <input id="editAudioInput" type="file" accept="audio/*" style="display:none;">
-        </div>
-        <div class="modal-actions">
-          <button type="button" id="editCancelBtn" class="btn-cancel">Cancel</button>
-          <button type="submit" id="editSubmitBtn" class="btn-submit"><i class="ri-save-line"></i> Update</button>
-        </div>
-      </form>
-    </div>
-  `
-
-  document.body.appendChild(modal)
-
-  let editingPreviewId = null
-  let editSelectedFile = null
-  let editSelectedPlatform = 'youtube'
-
-  const editPlatformSelect = modal.querySelector('.select-selected-edit')
-  const editCustomSelect = modal.querySelector('.custom-select-edit')
-
-  editPlatformSelect.onclick = (e) => {
-    e.stopPropagation()
-    editCustomSelect.classList.toggle('active')
-  }
-
-  document.addEventListener('click', (e) => {
-    if (!e.target.closest('.custom-select-edit')) {
-      editCustomSelect.classList.remove('active')
-    }
-  })
-
-  modal.querySelectorAll('.select-items-edit div').forEach(opt => {
-    opt.onclick = (e) => {
-      e.stopPropagation()
-      editSelectedPlatform = opt.dataset.platform
-      editPlatformSelect.innerHTML = `${opt.textContent}`
-      editCustomSelect.classList.remove('active')
-    }
-  })
-
-  const editDropzone = modal.querySelector('#editDropzone')
-  const editAudioInput = modal.querySelector('#editAudioInput')
-
-  editDropzone.onclick = () => editAudioInput.click()
-  editDropzone.ondragover = (e) => { e.preventDefault(); editDropzone.classList.add('dragover') }
-  editDropzone.ondragleave = () => editDropzone.classList.remove('dragover')
-  editDropzone.ondrop = (e) => {
-    e.preventDefault()
-    editDropzone.classList.remove('dragover')
-    const file = e.dataTransfer.files[0]
-    if (file?.type.startsWith('audio/')) {
-      editSelectedFile = file
-      editDropzone.innerHTML = `<i class="ri-music-2-line"></i> ${file.name}`
-    }
-  }
-
-  editAudioInput.onchange = (e) => {
-    editSelectedFile = e.target.files[0]
-    if (editSelectedFile) editDropzone.innerHTML = `<i class="ri-music-2-line"></i> ${editSelectedFile.name}`
-  }
-
-  const closeModal = () => {
-    modal.classList.remove('active')
-    editingPreviewId = null
-    editSelectedFile = null
-    editCustomSelect.classList.remove('active')
-  }
-
-  modal.querySelector('#editModalClose').onclick = closeModal
-  modal.querySelector('#editCancelBtn').onclick = closeModal
-  modal.onclick = (e) => { if (e.target === modal) closeModal() }
-
-  modal.querySelector('#editForm').onsubmit = async (e) => {
-    e.preventDefault()
-
-    const username = modal.querySelector('#editUsername').value.trim()
-    const releaseName = modal.querySelector('#editReleaseName').value.trim()
-    const releaseUrl = modal.querySelector('#editReleaseUrl').value.trim()
-    const submitBtn = modal.querySelector('#editSubmitBtn')
-
-    if (!username || !releaseName || !releaseUrl) return notify('Fill all fields', '#ef4444')
-
-    const editCheck = await canUpload(session.user.id, 'edit')
-    if (!editCheck.allowed) {
-      if (editCheck.showUpgrade) showPremiumBottomSheet()
-      return notify(editCheck.message, '#ef4444')
-    }
-
-    submitBtn.disabled = true
-    submitBtn.innerHTML = '<i class="ri-loader-4-line"></i> Updating...'
-
-    try {
-      const url = releaseUrl.includes('://') ? releaseUrl : `https://${releaseUrl}`
-      await saveSocialLink(editSelectedPlatform, username, url, session.user.id)
-
-      let audioData = null
-      if (editSelectedFile) {
-        const { data: currentPreview } = await supabase
-          .from('music_previews')
-          .select('preview_audio_url')
-          .eq('id', editingPreviewId)
-          .single()
-
-        if (!currentPreview.preview_audio_url) {
-          const audioCheck = await canUpload(session.user.id, 'audio')
-          if (!audioCheck.allowed) {
-            if (audioCheck.showUpgrade) showPremiumBottomSheet()
-            throw new Error(audioCheck.message)
-          }
-        }
-
-        submitBtn.innerHTML = '<i class="ri-upload-cloud-2-line"></i> Uploading audio...'
-
-        const { data: oldPreview } = await supabase.from('music_previews').select('preview_audio_url').eq('id', editingPreviewId).single()
-
-        if (oldPreview?.preview_audio_url) {
-          try {
-            const path = new URL(oldPreview.preview_audio_url).pathname.split('/audio-previews/')[1]
-            if (path) await supabase.storage.from('audio-previews').remove([path])
-          } catch {}
-        }
-
-        audioData = await uploadAudio(editSelectedFile, session)
-      }
-
-      const updateData = { release_name: releaseName, platform: editSelectedPlatform, release_url: url }
-      if (audioData) {
-        updateData.preview_audio_url = audioData.url
-        updateData.duration_seconds = audioData.duration
-      }
-
-      const { error: updateError } = await supabase
-        .from('music_previews')
-        .update(updateData)
-        .eq('id', editingPreviewId)
-        .eq('user_id', session.user.id)
-
-      if (updateError) throw updateError
-
-      notify('Release updated!', '#10b981')
-      closeModal()
-
-      await loadPreviews(session.user.id)
-      await setupAdvancedAnalytics(session.user.id)
-      await updateLimitsDisplay(session.user.id)
-
-    } catch (error) {
-      notify(error.message || 'Update failed', '#ef4444')
-    } finally {
-      submitBtn.disabled = false
-      submitBtn.innerHTML = '<i class="ri-save-line"></i> Update'
-    }
-  }
-
-  document.addEventListener('click', async (e) => {
-    const editBtn = e.target.closest('.edit-preview-btn')
-    if (!editBtn) return
-
-    const previewId = editBtn.dataset.previewId
-
-    modal.classList.add('active')
-    modal.querySelector('#editUsername').value = ''
-    modal.querySelector('#editReleaseName').value = 'Loading...'
-    modal.querySelector('#editReleaseUrl').value = ''
-    editPlatformSelect.innerHTML = 'Loading...'
-    editDropzone.innerHTML = '<i class="ri-loader-4-line"></i> Loading...'
-    
-    const submitBtn = modal.querySelector('#editSubmitBtn')
-    submitBtn.disabled = true
-
-    try {
-      const { data: preview } = await supabase.from('music_previews').select('*').eq('id', previewId).eq('user_id', session.user.id).single()
-
-      editingPreviewId = previewId
-
-      const links = await getSocialLinks(session.user.id)
-      const platformLink = links[preview.platform]
-
-      modal.querySelector('#editUsername').value = platformLink?.username || ''
-      modal.querySelector('#editReleaseName').value = preview.release_name
-      modal.querySelector('#editReleaseUrl').value = preview.release_url
-
-      const platformNames = { youtube: 'YouTube', instagram: 'Instagram', spotify: 'Spotify', apple_music: 'Apple Music' }
-      editPlatformSelect.innerHTML = `${platformNames[preview.platform] || 'Select Platform'}`
-      editSelectedPlatform = preview.platform
-
-      if (preview.preview_audio_url) {
-        editDropzone.innerHTML = `<i class="ri-music-2-line"></i> Current: ${preview.duration_seconds}s - Upload new to replace`
-      } else {
-        editDropzone.innerHTML = '<i class="ri-upload-cloud-2-line"></i> Drop new audio or <u>browse</u>'
-      }
-
-      submitBtn.disabled = false
-
-    } catch (error) {
-      closeModal()
-      notify('Failed to load release', '#ef4444')
-    }
-  })
-}
-
+// Form Setup
 const setupForm = (session) => {
   const form = document.getElementById('uploadForm')
   let selectedFile = null
   let selectedPlatform = null
 
-  const platformNameToKey = {
-    'Youtube': 'youtube',
-    'YouTube': 'youtube',
-    'Instagram': 'instagram',
-    'Spotify': 'spotify',
-    'Apple Music': 'apple_music'
-  }
-
-  const customSelect = document.querySelector('#uploadForm .custom-select')
-  const selected = customSelect?.querySelector('.select-selected')
-  
-  if (customSelect && selected) {
-    const observer = new MutationObserver(() => {
-      const displayText = selected.textContent.trim()
-      const platformKey = platformNameToKey[displayText]
-      
-      if (platformKey) {
-        selectedPlatform = platformKey
-      }
-    })
-    
-    observer.observe(selected, { 
-      childList: true, 
-      characterData: true, 
-      subtree: true 
-    })
-    
-    setTimeout(() => {
-      document.querySelectorAll('.select-items-portal div').forEach(item => {
-        item.addEventListener('click', () => {
-          const displayText = item.textContent.trim()
-          const platformKey = platformNameToKey[displayText]
-          
-          if (platformKey) {
-            selectedPlatform = platformKey
-          }
-        })
-      })
-    }, 100)
-  }
-
-  const dropzone = document.getElementById('dropAudio')
-  const fileInput = document.getElementById('uFile')
-
-  dropzone.onclick = () => fileInput.click()
-  
-  dropzone.ondragover = (e) => {
+  form?.addEventListener('submit', async (e) => {
     e.preventDefault()
-    dropzone.classList.add('dragover')
-  }
-  
-  dropzone.ondragleave = () => {
-    dropzone.classList.remove('dragover')
-  }
-  
-  dropzone.ondrop = (e) => {
-    e.preventDefault()
-    dropzone.classList.remove('dragover')
-    const file = e.dataTransfer.files[0]
-    if (file && file.type.startsWith('audio/')) {
-      selectedFile = file
-      dropzone.innerHTML = `<i class="ri-music-2-line"></i> ${file.name}`
-    }
-  }
-
-  fileInput.onchange = (e) => {
-    selectedFile = e.target.files[0]
-    if (selectedFile) {
-      dropzone.innerHTML = `<i class="ri-music-2-line"></i> ${selectedFile.name}`
-    }
-  }
-
-  document.getElementById('uReset').onclick = () => {
-    form.reset()
-    selectedFile = null
-    selectedPlatform = null
-    dropzone.innerHTML = '<i class="ri-upload-cloud-2-line"></i> Drop audio file preview here or <u>browse</u>'
-    if (selected) selected.textContent = 'Select Platform'
-  }
-
-  form.onsubmit = async (e) => {
-    e.preventDefault()
-
-    const username = document.getElementById('uDesc').value.trim()
-    const releaseName = document.getElementById('uTags').value.trim()
-    const releaseUrl = document.getElementById('uBpm').value.trim()
     const submitBtn = document.getElementById('uSubmit')
+    
+    if (!selectedPlatform) return notify('Select a platform', '#ef4444')
 
-    if (!selectedPlatform || !username || !releaseName || !releaseUrl) {
-      return notify('Please fill all fields', '#ef4444')
-    }
-
-    const releaseCheck = await canUpload(session.user.id, 'release')
-    if (!releaseCheck.allowed) {
-      if (releaseCheck.showUpgrade) showPremiumBottomSheet()
-      return notify(releaseCheck.message, '#ef4444')
+    const check = await canUpload(session.user.id, 'release')
+    if (!check.allowed) {
+      if (check.showUpgrade) showPremiumBottomSheet()
+      return notify(check.message, '#ef4444')
     }
 
     submitBtn.disabled = true
     submitBtn.innerHTML = '<i class="ri-loader-4-line"></i> Uploading...'
 
     try {
-      const url = releaseUrl.includes('://') ? releaseUrl : `https://${releaseUrl}`
-      await saveSocialLink(selectedPlatform, username, url, session.user.id)
-
       let audioData = null
       if (selectedFile) {
-        submitBtn.innerHTML = '<i class="ri-upload-cloud-2-line"></i> Processing audio...'
         audioData = await uploadAudio(selectedFile, session)
       }
 
-      const { error: insertError } = await supabase.from('music_previews').insert({
+      await supabase.from('music_previews').insert({
         user_id: session.user.id,
         platform: selectedPlatform,
-        release_name: releaseName,
-        release_url: url,
-        preview_audio_url: audioData?.url || null,
-        duration_seconds: audioData?.duration || null,
-        thumbnail_url: window.currentUser?.profile_picture || null,
-        is_active: true,
-        created_at: new Date().toISOString()
+        release_name: document.getElementById('uTags').value,
+        release_url: document.getElementById('uBpm').value,
+        preview_audio_url: audioData?.url,
+        duration_seconds: audioData?.duration,
+        thumbnail_url: window.currentUser?.profile_picture,
+        is_active: true
       })
 
-      if (insertError) throw insertError
-
-      const { error: countError } = await supabase.rpc('increment_release_count', {
-        user_id: session.user.id
-      })
-
-      if (countError) console.warn('Count update failed:', countError)
-
-      if (audioData) {
-        const { error: audioCountError } = await supabase.rpc('increment_audio_count', {
-          user_id: session.user.id
-        })
-        if (audioCountError) console.warn('Audio count update failed:', audioCountError)
-      }
-
-      notify('Release uploaded successfully!', '#10b981')
-      
+      notify('Release uploaded!', '#10b981')
       form.reset()
-      selectedFile = null
-      selectedPlatform = null
-      dropzone.innerHTML = '<i class="ri-upload-cloud-2-line"></i> Drop audio file preview here or <u>browse</u>'
-      if (selected) selected.textContent = 'Select Platform'
-
       await loadPreviews(session.user.id)
-      await setupAdvancedAnalytics(session.user.id)
-      await updateLimitsDisplay(session.user.id)
 
     } catch (error) {
-      notify(error.message || 'Upload failed', '#ef4444')
+      notify(error.message, '#ef4444')
     } finally {
       submitBtn.disabled = false
       submitBtn.innerHTML = '<i class="ri-upload-2-line"></i> Upload'
     }
-  }
+  })
 }
 
+// Delete Handlers
 const setupDeleteHandlers = (session) => {
   document.addEventListener('click', async (e) => {
     const deleteBtn = e.target.closest('.delete-preview-btn')
-    if (!deleteBtn) return
-
-    const previewId = deleteBtn.dataset.previewId
-    const confirmed = await confirm('Are you sure you want to delete this release? This action cannot be undone.')
-    
-    if (!confirmed) return
-
-    try {
-      const { data: preview } = await supabase
-        .from('music_previews')
-        .select('preview_audio_url')
-        .eq('id', previewId)
-        .eq('user_id', session.user.id)
-        .single()
-
-      if (preview?.preview_audio_url) {
-        try {
-          const path = new URL(preview.preview_audio_url).pathname.split('/audio-previews/')[1]
-          if (path) await supabase.storage.from('audio-previews').remove([path])
-        } catch (err) {
-          console.warn('Audio file deletion warning:', err)
-        }
-      }
-
-      const { error } = await supabase
-        .from('music_previews')
-        .update({ is_active: false })
-        .eq('id', previewId)
-        .eq('user_id', session.user.id)
-
-      if (error) throw error
-
+    if (deleteBtn && await confirm('Delete this release?')) {
+      await supabase.from('music_previews').update({ is_active: false }).eq('id', deleteBtn.dataset.previewId)
       notify('Release deleted', '#10b981')
       await loadPreviews(session.user.id)
-      await setupAdvancedAnalytics(session.user.id)
-      await updateLimitsDisplay(session.user.id)
-
-    } catch (error) {
-      notify('Delete failed', '#ef4444')
     }
-  })
-
-  document.addEventListener('click', async (e) => {
-    const deleteAllBtn = e.target.closest('.platform-delete-all-btn')
-    if (!deleteAllBtn) return
-
-    const platform = deleteAllBtn.dataset.platform
-    const count = deleteAllBtn.dataset.count
-    const confirmed = await confirm(`Delete all ${count} releases from this platform?`)
-    
-    if (!confirmed) return
-
-    try {
-      const { data: previews } = await supabase
-        .from('music_previews')
-        .select('id, preview_audio_url')
-        .eq('user_id', session.user.id)
-        .eq('platform', platform)
-        .eq('is_active', true)
-
-      for (const preview of previews || []) {
-        if (preview.preview_audio_url) {
-          try {
-            const path = new URL(preview.preview_audio_url).pathname.split('/audio-previews/')[1]
-            if (path) await supabase.storage.from('audio-previews').remove([path])
-          } catch {}
-        }
-      }
-
-      const { error } = await supabase
-        .from('music_previews')
-        .update({ is_active: false })
-        .eq('user_id', session.user.id)
-        .eq('platform', platform)
-
-      if (error) throw error
-
-      notify('All releases deleted', '#10b981')
-      await loadPreviews(session.user.id)
-      await setupAdvancedAnalytics(session.user.id)
-      await updateLimitsDisplay(session.user.id)
-
-    } catch (error) {
-      notify('Delete failed', '#ef4444')
-    }
-  })
-
-  document.addEventListener('click', (e) => {
-    const shareBtn = e.target.closest('.platform-share-btn')
-    if (!shareBtn) return
-
-    const platform = shareBtn.dataset.platform
-    const username = shareBtn.dataset.username
-    const cfg = platformConfig[platform]
-
-    const urlMap = {
-      youtube: `https://youtube.com/@${username}`,
-      instagram: `https://instagram.com/${username}`,
-      spotify: `https://open.spotify.com/user/${username}`,
-      apple_music: `https://music.apple.com/profile/${username}`
-    }
-
-    const url = urlMap[platform] || '#'
-    
-    navigator.clipboard.writeText(url).then(() => {
-      notify(`${cfg.name} link copied!`, '#10b981')
-    }).catch(() => {
-      notify('Failed to copy link', '#ef4444')
-    })
   })
 }
 
-const updateLimitsDisplay = async (userId) => {
-  const limits = await checkUserLimits(userId)
-  
-  const releaseDisplay = document.querySelector('.release-limit-display')
-  const audioDisplay = document.querySelector('.audio-limit-display')
-  const editsDisplay = document.querySelector('.edits-limit-display')
-  
-  const releaseProgress = document.querySelector('.release-progress')
-  const audioProgress = document.querySelector('.audio-progress')
-  const editsProgress = document.querySelector('.edits-progress')
-
-  if (isPro) {
-    if (releaseDisplay) releaseDisplay.textContent = 'Unlimited'
-    if (audioDisplay) audioDisplay.textContent = 'Unlimited'
-    if (editsDisplay) editsDisplay.textContent = 'Unlimited'
-    
-    if (releaseProgress) releaseProgress.style.width = '100%'
-    if (audioProgress) audioProgress.style.width = '100%'
-    if (editsProgress) editsProgress.style.width = '100%'
-    
-    document.querySelectorAll('.limit-item').forEach(item => item.classList.add('unlimited'))
-  } else {
-    if (releaseDisplay) releaseDisplay.textContent = `${limits.current_release_count}/${limits.max_releases}`
-    if (audioDisplay) audioDisplay.textContent = `${limits.current_audio_count}/${limits.max_audio_previews}`
-    if (editsDisplay) editsDisplay.textContent = `${limits.edits_remaining} remaining`
-    
-    if (releaseProgress) releaseProgress.style.width = `${(limits.current_release_count / limits.max_releases) * 100}%`
-    if (audioProgress) audioProgress.style.width = `${(limits.current_audio_count / limits.max_audio_previews) * 100}%`
-    if (editsProgress) editsProgress.style.width = `${((limits.max_edits - limits.edits_remaining) / limits.max_edits) * 100}%`
-  }
-}
-
-const setupModals = () => {
-  const limitModal = document.getElementById('limitModal')
-  const limitClose = document.getElementById('limitClose')
-  const limitModalBtn = document.querySelector('.limitModalBtn')
-
-  if (limitModalBtn) {
-    limitModalBtn.onclick = () => limitModal?.classList.remove('hidden')
-  }
-
-  if (limitClose) {
-    limitClose.onclick = () => limitModal?.classList.add('hidden')
-  }
-
-  if (limitModal) {
-    limitModal.onclick = (e) => {
-      if (e.target === limitModal) limitModal.classList.add('hidden')
-    }
-  }
-}
-
-const setupLogout = () => {
-  document.querySelector('.logout-btn')?.addEventListener('click', async () => {
-    await supabase.auth.signOut()
-    window.location.href = 'register'
-  })
-}
-
+// Initialize
 const init = async () => {
   try {
     const { session } = await initAuth()
     if (!session) return
 
-    await Promise.all([
-      loadPreviews(session.user.id),
-      setupAdvancedAnalytics(session.user.id),
-      updateLimitsDisplay(session.user.id)
-    ])
-
+    await checkProExpiration(session.user.id)
+    await Promise.all([loadPreviews(session.user.id), setupAdvancedAnalytics(session.user.id)])
+    
     setupForm(session)
-    setupEditModal(session)
     setupDeleteHandlers(session)
-    setupModals()
-    setupLogout()
-
-    document.querySelectorAll('[data-animate]').forEach((el, i) => {
-      setTimeout(() => el.classList.add('animated'), i * 50)
+    
+    document.querySelector('.logout-btn')?.addEventListener('click', async () => {
+      await supabase.auth.signOut()
+      window.location.href = 'register'
     })
 
   } catch (error) {
@@ -2389,6 +1366,7 @@ const init = async () => {
 
 init()
 </script>
+
 
 <script>
 document.addEventListener("click", e => {
