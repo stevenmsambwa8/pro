@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="logo.png" type="image/x-icon">
 <meta name="theme-color" content="#000000">
-<title>VYNAL Live Debate - Premium Dashboard</title>
+<title>VYNAL Premium - Pro Dashboard</title>
 <link rel="stylesheet" href="remixicon.min.css">
-<link rel="stylesheet" href="Premium.css">
+<link rel="stylesheet" href="Pro.css">
 <link rel="stylesheet" href="inter.css">
 <script src="https://www.paypal.com/sdk/js?client-id=AUOquOrBAj4hRVIlyydpdK_tKcmG4AN_o8IK3Tu1b9d8R24o3f9Wm1NsONdMBvTY3hCxniqU0WRiZAom&currency=USD"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
@@ -105,8 +105,8 @@
   box-shadow: 0 8px 30px rgba(255, 255, 255, 0.4);
 }
 
-/* Bottom Sheet Premium Modal */
-.premium-bottom-sheet {
+/* Bottom Sheet Pro Modal */
+.Pro-bottom-sheet {
   position: fixed;
   bottom: 0;
   left: 0;
@@ -121,11 +121,11 @@
   box-shadow: 0 -10px 50px rgba(0, 0, 0, 0.3);
 }
 
-.premium-bottom-sheet.active {
+.Pro-bottom-sheet.active {
   transform: translateY(0);
 }
 
-.premium-sheet-overlay {
+.Pro-sheet-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -139,7 +139,7 @@
   transition: opacity 0.3s ease;
 }
 
-.premium-sheet-overlay.active {
+.Pro-sheet-overlay.active {
   opacity: 1;
   pointer-events: all;
 }
@@ -161,7 +161,7 @@
   margin-bottom: 32px;
 }
 
-.premium-badge {
+.Pro-badge {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -174,7 +174,7 @@
   margin-bottom: 16px;
 }
 
-.premium-title {
+.Pro-title {
   font-size: 36px;
   font-weight: 800;
   color: #000000;
@@ -182,14 +182,14 @@
   line-height: 1.1;
 }
 
-.premium-subtitle {
+.Pro-subtitle {
   font-size: 16px;
   color: #666666;
   margin: 0;
   line-height: 1.6;
 }
 
-.premium-features {
+.Pro-features {
   display: grid;
   gap: 12px;
   margin: 32px 0;
@@ -240,7 +240,7 @@
   margin: 0;
 }
 
-.premium-pricing {
+.Pro-pricing {
   background: #000000;
   border-radius: 16px;
   padding: 24px;
@@ -248,7 +248,7 @@
   margin: 24px 0;
 }
 
-.premium-price {
+.Pro-price {
   font-size: 48px;
   font-weight: 900;
   color: white;
@@ -256,19 +256,19 @@
   margin: 0;
 }
 
-.premium-price-suffix {
+.Pro-price-suffix {
   font-size: 18px;
   color: rgba(255, 255, 255, 0.9);
   margin-left: 8px;
 }
 
-.premium-price-note {
+.Pro-price-note {
   font-size: 13px;
   color: rgba(255, 255, 255, 0.8);
   margin: 8px 0 0 0;
 }
 
-.premium-cta-btn {
+.Pro-cta-btn {
   width: 100%;
   background: #000000;
   color: white;
@@ -286,29 +286,29 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
 
-.premium-cta-btn:hover {
+.Pro-cta-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
   background: #1a1a1a;
 }
 
-.premium-cta-btn:disabled {
+.Pro-cta-btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
 
-.premium-cta-btn i {
+.Pro-cta-btn i {
   font-size: 22px;
 }
 
-.premium-note {
+.Pro-note {
   text-align: center;
   font-size: 13px;
   color: #999999;
   margin-top: 16px;
 }
 
-.Premium-badge {
+.Pro-badge {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -327,12 +327,12 @@
   50% { opacity: 0.8; }
 }
 
-.limits-header.Premium-user {
+.limits-header.Pro-user {
   background: #000000;
   color: white;
 }
 
-.user-limits-card.Premium-user {
+.user-limits-card.Pro-user {
   border: 2px solid #000000;
 }
 
@@ -341,27 +341,27 @@
   font-weight: 700;
 }
 
-.limit-item.unlimited .limit-Premiumgress-bar {
+.limit-item.unlimited .limit-Progress-bar {
   background: #000000;
   width: 100% !important;
 }
 
 /* Enhanced Scrollbar */
-.premium-bottom-sheet::-webkit-scrollbar {
+.Pro-bottom-sheet::-webkit-scrollbar {
   width: 8px;
 }
 
-.premium-bottom-sheet::-webkit-scrollbar-track {
+.Pro-bottom-sheet::-webkit-scrollbar-track {
   background: #f5f5f5;
   border-radius: 4px;
 }
 
-.premium-bottom-sheet::-webkit-scrollbar-thumb {
+.Pro-bottom-sheet::-webkit-scrollbar-thumb {
   background: #cccccc;
   border-radius: 4px;
 }
 
-.premium-bottom-sheet::-webkit-scrollbar-thumb:hover {
+.Pro-bottom-sheet::-webkit-scrollbar-thumb:hover {
   background: #999999;
 }
 
@@ -381,36 +381,36 @@
 </head>
 <body>
 
-<!-- Access Blocker for Non-Premium Users -->
+<!-- Access Blocker for Non-Pro Users -->
 <div class="access-blocker" id="accessBlocker">
   <div class="access-blocker-content">
     <div class="access-blocker-icon">
       <i class="ri-lock-fill"></i>
     </div>
-    <h1 class="access-blocker-title">Premium Dashboard Access</h1>
-    <p class="access-blocker-subtitle">This advanced analytics dashboard is exclusively available for VYNAL Premium members. Upgrade now to unlock unlimited features and insights.</p>
+    <h1 class="access-blocker-title">Pro Dashboard Access</h1>
+    <p class="access-blocker-subtitle">This advanced analytics dashboard is exclusively available for VYNAL Pro members. Upgrade now to unlock unlimited features and insights.</p>
     <button class="access-blocker-btn" id="accessBlockerUpgradeBtn">
       <i class="ri-vip-crown-fill"></i>
-      Upgrade to Premium
+      Upgrade to Pro
     </button>
   </div>
 </div>
 
-<!-- Premium Bottom Sheet -->
-<div class="premium-sheet-overlay" id="premiumSheetOverlay"></div>
-<div class="premium-bottom-sheet" id="premiumBottomSheet">
+<!-- Pro Bottom Sheet -->
+<div class="Pro-sheet-overlay" id="ProSheetOverlay"></div>
+<div class="Pro-bottom-sheet" id="ProBottomSheet">
   <div class="sheet-handle"></div>
   <div class="sheet-content">
     <div class="sheet-header">
-      <div class="premium-badge">
+      <div class="Pro-badge">
         <i class="ri-vip-crown-fill"></i>
-        VYNAL Premium
+        VYNAL Pro
       </div>
-      <h1 class="premium-title">Upgrade to Premium</h1>
-      <p class="premium-subtitle">Unlock unlimited releases, advanced analytics, and exclusive features to grow your music career.</p>
+      <h1 class="Pro-title">Upgrade to Pro</h1>
+      <p class="Pro-subtitle">Unlock unlimited releases, advanced analytics, and exclusive features to grow your music career.</p>
     </div>
 
-    <div class="premium-features">
+    <div class="Pro-features">
       <div class="feature-item">
         <div class="feature-icon">
           <i class="ri-music-fill"></i>
@@ -472,22 +472,22 @@
       </div>
     </div>
 
-    <div class="premium-pricing">
-      <div class="premium-price">$4.99<span class="premium-price-suffix">/month</span></div>
-      <p class="premium-price-note">Cancel anytime. No hidden fees.</p>
+    <div class="Pro-pricing">
+      <div class="Pro-price">$4.99<span class="Pro-price-suffix">/month</span></div>
+      <p class="Pro-price-note">Cancel anytime. No hidden fees.</p>
     </div>
 
-    <button class="premium-cta-btn" id="upgradeToPremium">
+    <button class="Pro-cta-btn" id="upgradeToPro">
       <i class="ri-vip-crown-fill"></i>
-      Start Premium Membership
+      Start Pro Membership
     </button>
 
-    <p class="premium-note">Join thousands of artists growing their careers with VYNAL Premium</p>
+    <p class="Pro-note">Join thousands of artists growing their careers with VYNAL Pro</p>
   </div>
 </div>
 
 <aside class="aside" aria-label="Sidebar">
-<div class="brand"><span><img src="Premium.svg" width="300"></span></div>
+<div class="brand"><span><img src="Pro.svg" width="300"></span></div>
 <div class="side-group">
 <div class="side-label">Main</div>
 <nav class="nav" aria-label="Primary">
@@ -495,13 +495,13 @@
 <a href="/debates"><i class="ri-compass-2-line"></i><span>Debates</span></a>
 <a href="/mall" data-link><i class="ri-shopping-bag-line"></i><span>Mi-mall</span></a>
 <a href="/events" data-link><i class="ri-ticket-2-line"></i><span>Mi-events</span></a>
-<a href="#" class="active" data-link><i class="ri-filter-3-line"></i><span>Premium.</span></a>
+<a href="#" class="active" data-link><i class="ri-filter-3-line"></i><span>Pro.</span></a>
 </nav>
 </div>
 <div class="side-group">
 <div class="side-label">Account</div>
 <nav class="nav" aria-label="Secondary">
-<a href="/account"><i class="ri-user-3-line"></i><span>Premiumfile</span></a>
+<a href="/account"><i class="ri-user-3-line"></i><span>Profile</span></a>
 <a href="/account-settings"><i class="ri-settings-3-line"></i><span>Settings</span></a>
 <a class="logout-btn"><i class="ri-logout-box-r-line"></i><span>Logout</span></a>
 </nav>
@@ -510,13 +510,13 @@
 
 <header class="header" role="banner" style="padding: 10px 0">
 <div class="moblogo">
-<span><img src="Premium.svg" width="80"></span>
+<span><img src="Pro.svg" width="80"></span>
 </div>
 <div class="searchbar">
 </div>
 <div class="actions">
 <div class="limit">
-<button class="btn ghost upgrade-to-Premium-btn" style="border:0; margin:0 -15px;background:none;color:grey;"><i class="ri-vip-crown-line t-l"></i></button>
+<button class="btn ghost upgrade-to-Pro-btn" style="border:0; margin:0 -15px;background:none;color:grey;"><i class="ri-vip-crown-line t-l"></i></button>
 <span class="limited-lock m-t7 m-r-5" style="color: grey;background: black;"><i class="ri-lock-line"></i></span>
 </div>
 <button class="btn-icon limitModalBtn" aria-label="create" style="margin-right: 5px;border: none;color:white;background:var(--brand);font-size: 20px;padding: 0 20px;"><i class="ri-pie-chart-line"></i></button>
@@ -604,8 +604,8 @@
         <div class="limit-label">Releases</div>
         <div class="release-limit-display limit-value">0/6</div>
       </div>
-      <div class="limit-Premiumgress">
-        <div class="limit-Premiumgress-bar release-Premiumgress"></div>
+      <div class="limit-Progress">
+        <div class="limit-Progress-bar release-Progress"></div>
       </div>
     </div>
     
@@ -617,8 +617,8 @@
         <div class="limit-label">Audio Previews</div>
         <div class="audio-limit-display limit-value">0/10</div>
       </div>
-      <div class="limit-Premiumgress">
-        <div class="limit-Premiumgress-bar audio-Premiumgress"></div>
+      <div class="limit-Progress">
+        <div class="limit-Progress-bar audio-Progress"></div>
       </div>
     </div>
     
@@ -630,15 +630,15 @@
         <div class="limit-label">Edits</div>
         <div class="edits-limit-display limit-value">1 remaining</div>
       </div>
-      <div class="limit-Premiumgress">
-        <div class="limit-Premiumgress-bar edits-Premiumgress"></div>
+      <div class="limit-Progress">
+        <div class="limit-Progress-bar edits-Progress"></div>
       </div>
     </div>
   </div>
   
   <div class="limits-footer" id="limitsFooter">
     <i class="ri-information-line"></i>
-    <span>Upgrade to Premium for unlimited releases, audio previews, and edits</span>
+    <span>Upgrade to Pro for unlimited releases, audio previews, and edits</span>
   </div>
 </div>
 </div>
@@ -668,7 +668,7 @@
 <script type="module">
   import { supabase } from './supabase-client.js'
 
-let isPremium = false
+let isPro = false
 let analyticsCharts = {}
 
 const notify = (message, color = '#10b981') => {
@@ -709,7 +709,7 @@ const notify = (message, color = '#10b981') => {
 }
 
 const confirm = (message) => {
-  return new Premiummise((resolve) => {
+  return new Promise((resolve) => {
     const modal = document.createElement('div')
     modal.className = 'confirm-modal-overlay'
     
@@ -746,37 +746,37 @@ const confirm = (message) => {
 
 const formatTime = (s) => `${Math.floor(s/60)}`.padStart(2,'0')+':'+`${s%60}`.padStart(2,'0')
 
-const showPremiumBottomSheet = () => {
-  const overlay = document.getElementById('premiumSheetOverlay')
-  const sheet = document.getElementById('premiumBottomSheet')
+const showProBottomSheet = () => {
+  const overlay = document.getElementById('ProSheetOverlay')
+  const sheet = document.getElementById('ProBottomSheet')
   
   overlay.classList.add('active')
   setTimeout(() => sheet.classList.add('active'), 10)
 }
 
-const hidePremiumBottomSheet = () => {
-  const overlay = document.getElementById('premiumSheetOverlay')
-  const sheet = document.getElementById('premiumBottomSheet')
+const hideProBottomSheet = () => {
+  const overlay = document.getElementById('ProSheetOverlay')
+  const sheet = document.getElementById('ProBottomSheet')
   
   sheet.classList.remove('active')
   setTimeout(() => overlay.classList.remove('active'), 400)
 }
 
-document.getElementById('premiumSheetOverlay').addEventListener('click', hidePremiumBottomSheet)
+document.getElementById('ProSheetOverlay').addEventListener('click', hideProBottomSheet)
 
 document.addEventListener('click', (e) => {
-  if (e.target.closest('.upgrade-to-Premium-btn') || e.target.closest('.upgrade-Premiummpt-btn')) {
-    showPremiumBottomSheet()
+  if (e.target.closest('.upgrade-to-Pro-btn') || e.target.closest('.upgrade-Prompt-btn')) {
+    showProBottomSheet()
   }
 })
 
-document.getElementById('accessBlockerUpgradeBtn').addEventListener('click', showPremiumBottomSheet)
+document.getElementById('accessBlockerUpgradeBtn').addEventListener('click', showProBottomSheet)
 
-document.getElementById('upgradeToPremium').addEventListener('click', async () => {
+document.getElementById('upgradeToPro').addEventListener('click', async () => {
   if (!window.currentSession) return
   
   // Hide the upgrade button temporarily and show PayPal button
-  const upgradeBtn = document.getElementById('upgradeToPremium')
+  const upgradeBtn = document.getElementById('upgradeToPro')
   upgradeBtn.style.display = 'none'
   
   // Create PayPal button container if it doesn't exist
@@ -796,18 +796,18 @@ document.getElementById('upgradeToPremium').addEventListener('click', async () =
             value: '4.99',
             currency_code: 'USD'
           },
-          description: 'Premium Membership - Music Preview Platform'
+          description: 'Pro Membership - Music Preview Platform'
         }]
       })
     },
-    onApPremiumve: async function(data, actions) {
+    onApProve: async function(data, actions) {
       return actions.order.capture().then(async function(details) {
         // Payment successful, upgrade user
         try {
           const { error } = await supabase
-            .from('Premiumfiles')
+            .from('Profiles')
             .update({ 
-              tier: 'Premium',
+              tier: 'Pro',
               payment_id: details.id,
               upgraded_at: new Date().toISOString()
             })
@@ -815,7 +815,7 @@ document.getElementById('upgradeToPremium').addEventListener('click', async () =
           
           if (error) throw error
           
-          notify('🎉 Payment successful! Upgrading to Premium...', '#10b981')
+          notify('🎉 Payment successful! Upgrading to Pro...', '#10b981')
           setTimeout(() => window.location.reload(), 1500)
           
         } catch (error) {
@@ -842,13 +842,13 @@ const initAuth = async () => {
   const { data: { session } } = await supabase.auth.getSession()
   if (!session) return window.location.href = 'register'
 
-  const { data: Premiumfile } = await supabase.from('Premiumfiles').select('*').eq('id', session.user.id).single()
+  const { data: Profile } = await supabase.from('Profiles').select('*').eq('id', session.user.id).single()
   
-  window.currentUser = Premiumfile
+  window.currentUser = Profile
   window.currentSession = session
-  isPremium = Premiumfile.tier === 'Premium'
+  isPro = Profile.tier === 'Pro'
   
-  if (!isPremium) {
+  if (!isPro) {
     document.getElementById('accessBlocker').classList.add('active')
     document.querySelector('.main').classList.add('blurred')
     document.querySelector('.aside').classList.add('blurred')
@@ -858,27 +858,27 @@ const initAuth = async () => {
   }
   
   document.querySelectorAll('.artist__name, .user-name').forEach(el => {
-    el.innerHTML = (Premiumfile.stage_name || 'Artist') + (isPremium ? '<span class="Premium-badge"><i class="ri-vip-crown-fill"></i>PREMIUM</span>' : '')
+    el.innerHTML = (Profile.stage_name || 'Artist') + (isPro ? '<span class="Pro-badge"><i class="ri-vip-crown-fill"></i>Pro</span>' : '')
   })
-  document.querySelectorAll('.Premiumfile-picture, .uploading').forEach(el => el.src = Premiumfile.Premiumfile_picture || 'user.webp')
-  document.querySelectorAll('.artist__label').forEach(el => el.textContent = Premiumfile.role || 'Artist')
+  document.querySelectorAll('.Profile-picture, .uploading').forEach(el => el.src = Profile.Profile_picture || 'user.webp')
+  document.querySelectorAll('.artist__label').forEach(el => el.textContent = Profile.role || 'Artist')
   
   const card = document.getElementById('artistCard')
-  if (card && Premiumfile.Premiumfile_picture) {
-    card.style.backgroundImage = `url('${Premiumfile.Premiumfile_picture}')`
+  if (card && Profile.Profile_picture) {
+    card.style.backgroundImage = `url('${Profile.Profile_picture}')`
     card.style.backgroundSize = 'cover'
     card.style.backgroundPosition = 'center'
   }
   
-  if (isPremium) {
-    document.querySelector('.upgrade-to-Premium-btn')?.remove()
+  if (isPro) {
+    document.querySelector('.upgrade-to-Pro-btn')?.remove()
     document.querySelector('.limited-lock')?.remove()
-    document.querySelectorAll('.user-limits-card').forEach(el => el.classList.add('Premium-user'))
-    document.querySelectorAll('.limits-header').forEach(el => el.classList.add('Premium-user'))
+    document.querySelectorAll('.user-limits-card').forEach(el => el.classList.add('Pro-user'))
+    document.querySelectorAll('.limits-header').forEach(el => el.classList.add('Pro-user'))
     
     const footer = document.getElementById('limitsFooter')
     if (footer) {
-      footer.innerHTML = '<i class="ri-vip-crown-fill" style="color:#000000"></i><span style="color:#000000;font-weight:700">Premium Plan Active - Unlimited Everything!</span>'
+      footer.innerHTML = '<i class="ri-vip-crown-fill" style="color:#000000"></i><span style="color:#000000;font-weight:700">Pro Plan Active - Unlimited Everything!</span>'
     }
     
     const blocker = document.getElementById('accessBlocker')
@@ -888,19 +888,19 @@ const initAuth = async () => {
     document.querySelector('.header')?.classList.remove('blurred')
   }
   
-  return { session, Premiumfile }
+  return { session, Profile }
 }
 
 const checkUserLimits = async (userId) => {
-  const { data: Premiumfile } = await supabase
-    .from('Premiumfiles')
+  const { data: Profile } = await supabase
+    .from('Profiles')
     .select('current_release_count, max_releases, current_audio_count, max_audio_previews, edits_remaining, tier, max_edits')
     .eq('id', userId)
     .single()
   
-  if (Premiumfile.tier === 'Premium') {
+  if (Profile.tier === 'Pro') {
     return {
-      ...Premiumfile,
+      ...Profile,
       max_releases: 999999,
       max_audio_previews: 999999,
       edits_remaining: 999999,
@@ -908,11 +908,11 @@ const checkUserLimits = async (userId) => {
     }
   }
   
-  return Premiumfile
+  return Profile
 }
 
 const canUpload = async (userId, type) => {
-  if (isPremium) return { allowed: true, message: 'Unlimited for Premium users' }
+  if (isPro) return { allowed: true, message: 'Unlimited for Pro users' }
   
   const limits = await checkUserLimits(userId)
   
@@ -920,7 +920,7 @@ const canUpload = async (userId, type) => {
     if (limits.current_release_count >= limits.max_releases) {
       return { 
         allowed: false, 
-        message: `Release limit reached (${limits.max_releases} max). Upgrade to Premium for unlimited!`,
+        message: `Release limit reached (${limits.max_releases} max). Upgrade to Pro for unlimited!`,
         showUpgrade: true
       }
     }
@@ -930,7 +930,7 @@ const canUpload = async (userId, type) => {
     if (limits.current_audio_count >= limits.max_audio_previews) {
       return { 
         allowed: false, 
-        message: `Audio preview limit reached (${limits.max_audio_previews} max). Upgrade to Premium!`,
+        message: `Audio preview limit reached (${limits.max_audio_previews} max). Upgrade to Pro!`,
         showUpgrade: true
       }
     }
@@ -940,7 +940,7 @@ const canUpload = async (userId, type) => {
     if (limits.edits_remaining <= 0) {
       return { 
         allowed: false, 
-        message: `Edit limit reached. Upgrade to Premium for unlimited edits!`,
+        message: `Edit limit reached. Upgrade to Pro for unlimited edits!`,
         showUpgrade: true
       }
     }
@@ -955,12 +955,12 @@ const uploadAudio = async (file, session) => {
   
   const check = await canUpload(session.user.id, 'audio')
   if (!check.allowed) {
-    if (check.showUpgrade) showPremiumBottomSheet()
+    if (check.showUpgrade) showProBottomSheet()
     throw new Error(check.message)
   }
 
   const audio = new Audio()
-  const duration = await new Premiummise((res, rej) => {
+  const duration = await new Promise((res, rej) => {
     audio.src = URL.createObjectURL(file)
     audio.onloadedmetadata = () => {
       const dur = Math.floor(audio.duration)
@@ -980,7 +980,7 @@ const uploadAudio = async (file, session) => {
 
 const getSocialLinks = async (userId) => {
   const { data } = await supabase.from('user_social_links').select('*').eq('user_id', userId)
-  return data?.reduce((acc, l) => ({ ...acc, [l.platform]: { username: l.username, url: l.Premiumfile_url, verified: l.is_verified } }), {}) || {}
+  return data?.reduce((acc, l) => ({ ...acc, [l.platform]: { username: l.username, url: l.Profile_url, verified: l.is_verified } }), {}) || {}
 }
 
 const saveSocialLink = async (platform, username, url, userId) => {
@@ -998,7 +998,7 @@ const saveSocialLink = async (platform, username, url, userId) => {
       .from('user_social_links')
       .update({
         username,
-        Premiumfile_url: url,
+        Profile_url: url,
         updated_at: new Date().toISOString()
       })
       .eq('id', existing.id)
@@ -1011,7 +1011,7 @@ const saveSocialLink = async (platform, username, url, userId) => {
         user_id: userId,
         platform,
         username,
-        Premiumfile_url: url,
+        Profile_url: url,
         updated_at: new Date().toISOString()
       })
     
@@ -1520,10 +1520,10 @@ const platformConfig = {
 
 const buildPreviewCard = (preview) => {
   const cfg = platformConfig[preview.platform]
-  const thumb = preview.thumbnail_url || window.currentUser?.Premiumfile_picture || 'user.webp'
+  const thumb = preview.thumbnail_url || window.currentUser?.Profile_picture || 'user.webp'
   const name = window.currentUser?.stage_name || 'Artist'
 
-  const canEdit = isPremium || window.currentUserLimits?.edits_remaining > 0
+  const canEdit = isPro || window.currentUserLimits?.edits_remaining > 0
 
   return `
     <div class="span-12 preview-card" data-preview-id="${preview.id}" data-animate>
@@ -1568,7 +1568,7 @@ const buildPreviewCard = (preview) => {
               </div>
               <div class="waveform-container">
                 <canvas class="waveform-canvas"></canvas>
-                <div class="Premiumgress-overlay"></div>
+                <div class="Progress-overlay"></div>
               </div>
             </div>
           </div>
@@ -1593,7 +1593,7 @@ const initAudioPlayer = (container, previewId) => {
   const time = player.querySelector('.time-display')
   const wave = player.querySelector('.waveform-container')
   const canvas = player.querySelector('.waveform-canvas')
-  const Premiumgress = player.querySelector('.Premiumgress-overlay')
+  const Progress = player.querySelector('.Progress-overlay')
   const ctx = canvas.getContext('2d')
 
   canvas.width = wave.offsetWidth
@@ -1639,7 +1639,7 @@ const initAudioPlayer = (container, previewId) => {
 
   audio.ontimeupdate = () => {
     time.textContent = `${formatTime(Math.floor(audio.currentTime))} / ${formatTime(Math.floor(audio.duration)||0)}`
-    Premiumgress.style.width = ((audio.currentTime / audio.duration) * 100) + '%'
+    Progress.style.width = ((audio.currentTime / audio.duration) * 100) + '%'
   }
 
   wave.onclick = (e) => {
@@ -1650,7 +1650,7 @@ const initAudioPlayer = (container, previewId) => {
   audio.onended = () => {
     icon.className = 'ri-play-fill play-icon'
     btn.classList.remove('playing')
-    Premiumgress.style.width = '0%'
+    Progress.style.width = '0%'
   }
 
   window.addEventListener('resize', () => {
@@ -1672,7 +1672,7 @@ const loadPreviews = async (userId) => {
     container.innerHTML = `
       <div class="span-12 no-releases-container">
         <div class="no-releases-content">
-          <img src="Premium.svg" alt="No Releases" class="no-releases-image" />
+          <img src="Pro.svg" alt="No Releases" class="no-releases-image" />
           <h3 class="no-releases-title">No Releases Yet</h3>
           <p class="no-releases-text">Start sharing your music by adding your first release above.</p>
           <div class="platform-grid">
@@ -1705,7 +1705,7 @@ const loadPreviews = async (userId) => {
             <span><i class="${cfg.icon} ri-xl" style="color:${cfg.color};"></i></span>
             <div class="post-header-info">
               <strong><a>${cfg.name}</a><a class="t-sm t-400">@${username}</a></strong>
-              <div class="muted"><a class="Premiumfile">Available here!</a></div>
+              <div class="muted"><a class="Profile">Available here!</a></div>
             </div>
           </div>
           <div class="post-header-right">
@@ -1842,7 +1842,7 @@ const setupEditModal = (session) => {
   const editCustomSelect = modal.querySelector('.custom-select-edit')
 
   editPlatformSelect.onclick = (e) => {
-    e.stopPremiumpagation()
+    e.stopPropagation()
     editCustomSelect.classList.toggle('active')
   }
 
@@ -1854,7 +1854,7 @@ const setupEditModal = (session) => {
 
   modal.querySelectorAll('.select-items-edit div').forEach(opt => {
     opt.onclick = (e) => {
-      e.stopPremiumpagation()
+      e.stopPropagation()
       editSelectedPlatform = opt.dataset.platform
       editPlatformSelect.innerHTML = `${opt.textContent}`
       editCustomSelect.classList.remove('active')
@@ -1905,7 +1905,7 @@ const setupEditModal = (session) => {
 
     const editCheck = await canUpload(session.user.id, 'edit')
     if (!editCheck.allowed) {
-      if (editCheck.showUpgrade) showPremiumBottomSheet()
+      if (editCheck.showUpgrade) showProBottomSheet()
       return notify(editCheck.message, '#ef4444')
     }
 
@@ -1927,7 +1927,7 @@ const setupEditModal = (session) => {
         if (!currentPreview.preview_audio_url) {
           const audioCheck = await canUpload(session.user.id, 'audio')
           if (!audioCheck.allowed) {
-            if (audioCheck.showUpgrade) showPremiumBottomSheet()
+            if (audioCheck.showUpgrade) showProBottomSheet()
             throw new Error(audioCheck.message)
           }
         }
@@ -2121,7 +2121,7 @@ const setupForm = (session) => {
 
     const releaseCheck = await canUpload(session.user.id, 'release')
     if (!releaseCheck.allowed) {
-      if (releaseCheck.showUpgrade) showPremiumBottomSheet()
+      if (releaseCheck.showUpgrade) showProBottomSheet()
       return notify(releaseCheck.message, '#ef4444')
     }
 
@@ -2134,7 +2134,7 @@ const setupForm = (session) => {
 
       let audioData = null
       if (selectedFile) {
-        submitBtn.innerHTML = '<i class="ri-upload-cloud-2-line"></i> Premiumcessing audio...'
+        submitBtn.innerHTML = '<i class="ri-upload-cloud-2-line"></i> Processing audio...'
         audioData = await uploadAudio(selectedFile, session)
       }
 
@@ -2145,7 +2145,7 @@ const setupForm = (session) => {
         release_url: url,
         preview_audio_url: audioData?.url || null,
         duration_seconds: audioData?.duration || null,
-        thumbnail_url: window.currentUser?.Premiumfile_picture || null,
+        thumbnail_url: window.currentUser?.Profile_picture || null,
         is_active: true,
         created_at: new Date().toISOString()
       })
@@ -2288,7 +2288,7 @@ const setupDeleteHandlers = (session) => {
       youtube: `https://youtube.com/@${username}`,
       instagram: `https://instagram.com/${username}`,
       spotify: `https://open.spotify.com/user/${username}`,
-      apple_music: `https://music.apple.com/Premiumfile/${username}`
+      apple_music: `https://music.apple.com/Profile/${username}`
     }
 
     const url = urlMap[platform] || '#'
@@ -2308,18 +2308,18 @@ const updateLimitsDisplay = async (userId) => {
   const audioDisplay = document.querySelector('.audio-limit-display')
   const editsDisplay = document.querySelector('.edits-limit-display')
   
-  const releasePremiumgress = document.querySelector('.release-Premiumgress')
-  const audioPremiumgress = document.querySelector('.audio-Premiumgress')
-  const editsPremiumgress = document.querySelector('.edits-Premiumgress')
+  const releaseProgress = document.querySelector('.release-Progress')
+  const audioProgress = document.querySelector('.audio-Progress')
+  const editsProgress = document.querySelector('.edits-Progress')
 
-  if (isPremium) {
+  if (isPro) {
     if (releaseDisplay) releaseDisplay.textContent = 'Unlimited'
     if (audioDisplay) audioDisplay.textContent = 'Unlimited'
     if (editsDisplay) editsDisplay.textContent = 'Unlimited'
     
-    if (releasePremiumgress) releasePremiumgress.style.width = '100%'
-    if (audioPremiumgress) audioPremiumgress.style.width = '100%'
-    if (editsPremiumgress) editsPremiumgress.style.width = '100%'
+    if (releaseProgress) releaseProgress.style.width = '100%'
+    if (audioProgress) audioProgress.style.width = '100%'
+    if (editsProgress) editsProgress.style.width = '100%'
     
     document.querySelectorAll('.limit-item').forEach(item => item.classList.add('unlimited'))
   } else {
@@ -2327,9 +2327,9 @@ const updateLimitsDisplay = async (userId) => {
     if (audioDisplay) audioDisplay.textContent = `${limits.current_audio_count}/${limits.max_audio_previews}`
     if (editsDisplay) editsDisplay.textContent = `${limits.edits_remaining} remaining`
     
-    if (releasePremiumgress) releasePremiumgress.style.width = `${(limits.current_release_count / limits.max_releases) * 100}%`
-    if (audioPremiumgress) audioPremiumgress.style.width = `${(limits.current_audio_count / limits.max_audio_previews) * 100}%`
-    if (editsPremiumgress) editsPremiumgress.style.width = `${((limits.max_edits - limits.edits_remaining) / limits.max_edits) * 100}%`
+    if (releaseProgress) releaseProgress.style.width = `${(limits.current_release_count / limits.max_releases) * 100}%`
+    if (audioProgress) audioProgress.style.width = `${(limits.current_audio_count / limits.max_audio_previews) * 100}%`
+    if (editsProgress) editsProgress.style.width = `${((limits.max_edits - limits.edits_remaining) / limits.max_edits) * 100}%`
   }
 }
 
@@ -2365,7 +2365,7 @@ const init = async () => {
     const { session } = await initAuth()
     if (!session) return
 
-    await Premiummise.all([
+    await Promise.all([
       loadPreviews(session.user.id),
       setupAdvancedAnalytics(session.user.id),
       updateLimitsDisplay(session.user.id)
@@ -2418,7 +2418,7 @@ document.querySelectorAll('.custom-select').forEach(select => {
     dropdown.appendChild(div);
 
     div.addEventListener('click', e => {
-      e.stopPremiumpagation();
+      e.stopPropagation();
       selected.textContent = opt;
       dropdown.classList.remove('show');
       selected.classList.remove('active');
@@ -2427,7 +2427,7 @@ document.querySelectorAll('.custom-select').forEach(select => {
   document.body.appendChild(dropdown);
 
   selected.addEventListener('click', e => {
-    e.stopPremiumpagation();
+    e.stopPropagation();
 
     const rect = selected.getBoundingClientRect();
     dropdown.style.top = `${rect.bottom + window.scrollY}px`;
@@ -2469,4 +2469,3 @@ document.addEventListener('click', () => {
 </script>
 </body>
 </html>
-
