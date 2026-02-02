@@ -555,7 +555,7 @@
 <i class="ri-upload-cloud-2-line"></i> Drop audio file preview here or <u>browse</u>
 <input id="uFile" type="file" accept="audio/*" class="sr-only" />
 </div>
-<span style="text-align: center;">* allowed .mp3 only 1:00 minute</span>
+<span style="text-align: center;">* allowed .mp3 only 2:00 minute</span>
 <div style="display:flex; gap:8px; justify-content:flex-end;">
 <button type="button" class="btn ghost" id="uReset"><i class="ri-restart-line"></i> Reset</button>
 <button class="btn primary" id="uSubmit" type="submit"><i class="ri-upload-2-line"></i> Upload</button>
@@ -955,7 +955,8 @@ const canUpload = async (userId, type) => {
 
 const uploadAudio = async (file, session) => {
   if (!file.type.startsWith('audio/')) throw new Error('Only audio files allowed')
-  if (file.size > 3*1024*1024) throw new Error('Max 3MB')
+ if (file.size > 4*1024*1024) throw new Error('Max 4MB')
+
   
   const check = await canUpload(session.user.id, 'audio')
   if (!check.allowed) {
@@ -969,7 +970,7 @@ const uploadAudio = async (file, session) => {
     audio.onloadedmetadata = () => {
       const dur = Math.floor(audio.duration)
       URL.revokeObjectURL(audio.src)
-      dur > 60 ? rej(new Error('Max 60 seconds')) : res(dur)
+      dur > 120 ? rej(new Error('Max 120 seconds')) : res(dur)
     }
     audio.onerror = () => rej(new Error('Invalid audio'))
   })
