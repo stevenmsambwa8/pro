@@ -377,6 +377,116 @@
   filter: blur(8px);
   pointer-events: none;
 }
+
+/* NEW STYLES FOR ENHANCED PLATFORMS */
+.platform-logo-img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+.platform-select-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  background: rgba(255,255,255,0.04);
+  transition: all .25s ease;
+  border: 2px solid transparent;
+}
+
+.platform-select-option:hover {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.15);
+  transform: translateX(4px);
+}
+
+.platform-select-option.selected {
+  background: rgba(255,255,255,0.12);
+  border-color: var(--brand);
+}
+
+.platform-option-logo {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  flex-shrink: 0;
+  background: rgba(255,255,255,0.05);
+  padding: 4px;
+}
+
+.platform-option-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.platform-option-text {
+  flex: 1;
+  color: white;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.platform-grid-expanded {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.platform-card {
+  background: rgba(255,255,255,0.03);
+  border: 2px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.platform-card:hover {
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(255,255,255,0.2);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+}
+
+.platform-card-logo {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.05);
+  border-radius: 12px;
+  padding: 8px;
+}
+
+.platform-card-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.platform-card-name {
+  color: white;
+  font-weight: 700;
+  font-size: 15px;
+  margin-bottom: 4px;
+}
+
+.platform-card-type {
+  color: rgba(255,255,255,0.6);
+  font-size: 12px;
+}
 </style>
 </head>
 <body>
@@ -389,7 +499,7 @@
     </div>
     <h1 class="access-blocker-title">ProPremium Dashboard Access</h1>
     <p class="access-blocker-subtitle">This advanced analytics dashboard is exclusively available for VYNAL Pro members. Upgrade now to unlock unlimited features and insights, you can always access free version<a href="/pro" style="font-weight: 800"> here</a>.</p>
-    <button class="access-blocker-btn" id="accessBlockerUpgradeBtn">
+    <button class="access-blocker-btn" id="accessBlockerUpgradeBtn" disabled>
       <i class="ri-vip-crown-fill"></i>
       Upgrade to Premium
     </button>
@@ -541,7 +651,7 @@
 <form id="uploadForm" class="upload" novalidate>
 <div class="row">
 <div class="col-6">
-<div class="custom-select" data-options="Youtube,Instagram,Spotify,Apple Music">
+<div class="custom-select" data-options="Youtube,Instagram,Spotify,Apple Music,Tidal,Deezer,SoundCloud,Bandcamp,Amazon Music,Pandora,YouTube Music,Audiomack,Napster,Qobuz,Tencent Music">
   <div class="select-selected">Select Platform</div>
 </div>
 </div>
@@ -640,6 +750,50 @@
     </div>
   </div>
   
+  <!-- INVITE LINK GENERATOR SECTION -->
+  <div class="invite-section" style="margin-top: 30px; padding: 20px; background: rgba(255,255,255,0.05); border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
+    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+      <i class="ri-user-add-line" style="font-size: 24px; color: #667eea;"></i>
+      <div>
+        <h4 style="margin: 0; font-size: 16px; font-weight: 700; color: white;">Invite Friends to Pro</h4>
+        <p style="margin: 4px 0 0 0; font-size: 12px; color: rgba(255,255,255,0.6);">Share your invite link and earn rewards</p>
+      </div>
+    </div>
+    
+    <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+      <input 
+        type="text" 
+        id="inviteLinkDisplay" 
+        readonly 
+        value="Loading..."
+        style="flex: 1; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 12px; color: white; font-size: 14px; font-family: monospace;"
+      />
+      <button 
+        id="copyInviteLinkBtn"
+        style="background: #667eea; color: white; border: none; border-radius: 8px; padding: 10px 20px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; white-space: nowrap;"
+      >
+        <i class="ri-file-copy-line"></i> Copy
+      </button>
+    </div>
+    
+    <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px; background: rgba(103, 126, 234, 0.1); border-radius: 8px; border: 1px solid rgba(103, 126, 234, 0.3);">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <i class="ri-user-star-fill" style="font-size: 20px; color: #667eea;"></i>
+        <span style="font-size: 14px; color: white;">Pro Invites</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span id="proInviteCount" style="font-size: 24px; font-weight: 800; color: #667eea;">0</span>
+        <span style="font-size: 12px; color: rgba(255,255,255,0.6);">users upgraded</span>
+      </div>
+    </div>
+    
+    <div style="margin-top: 12px; padding: 12px; background: rgba(255,255,255,0.03); border-radius: 8px; border-left: 3px solid #667eea;">
+      <p style="margin: 0; font-size: 12px; color: rgba(255,255,255,0.7); line-height: 1.5;">
+        <i class="ri-information-line"></i> When someone upgrades to Pro using your link, you'll earn rewards and they'll get exclusive benefits!
+      </p>
+    </div>
+  </div>
+  
   <div class="limits-footer" id="limitsFooter">
     <i class="ri-information-line"></i>
     <span>Upgrade to Pro for unlimited releases, audio previews, and edits</span>
@@ -674,6 +828,100 @@
 
 let isPro = false
 let analyticsCharts = {}
+
+// EXPANDED PLATFORM CONFIGURATION WITH LOGOS FROM CDN
+const platformConfig = {
+  youtube: { 
+    icon: 'ri-youtube-fill', 
+    name: 'YouTube', 
+    color: '#FF0000',
+    logo: 'https://cdn.simpleicons.org/youtube/FF0000'
+  },
+  youtube_music: { 
+    icon: 'ri-music-fill', 
+    name: 'YouTube Music', 
+    color: '#FF0000',
+    logo: 'https://cdn.simpleicons.org/youtubemusic/FF0000'
+  },
+  instagram: { 
+    icon: 'ri-instagram-fill', 
+    name: 'Instagram', 
+    color: '#E4405F',
+    logo: 'https://cdn.simpleicons.org/instagram/E4405F'
+  },
+  spotify: { 
+    icon: 'ri-spotify-fill', 
+    name: 'Spotify', 
+    color: '#1DB954',
+    logo: 'https://cdn.simpleicons.org/spotify/1DB954'
+  },
+  apple_music: { 
+    icon: 'ri-apple-fill', 
+    name: 'Apple Music', 
+    color: '#FA243C',
+    logo: 'https://cdn.simpleicons.org/applemusic/FA243C'
+  },
+  tidal: { 
+    icon: 'ri-music-2-fill', 
+    name: 'Tidal', 
+    color: '#000000',
+    logo: 'https://cdn.simpleicons.org/tidal/000000'
+  },
+  deezer: { 
+    icon: 'ri-music-fill', 
+    name: 'Deezer', 
+    color: '#FF0092',
+    logo: 'https://cdn.simpleicons.org/deezer/FF0092'
+  },
+  soundcloud: { 
+    icon: 'ri-soundcloud-fill', 
+    name: 'SoundCloud', 
+    color: '#FF5500',
+    logo: 'https://cdn.simpleicons.org/soundcloud/FF5500'
+  },
+  bandcamp: { 
+    icon: 'ri-music-2-line', 
+    name: 'Bandcamp', 
+    color: '#629AA9',
+    logo: 'https://cdn.simpleicons.org/bandcamp/629AA9'
+  },
+  amazon_music: { 
+    icon: 'ri-amazon-fill', 
+    name: 'Amazon Music', 
+    color: '#FF9900',
+    logo: 'https://cdn.simpleicons.org/amazonmusic/FF9900'
+  },
+  pandora: { 
+    icon: 'ri-music-fill', 
+    name: 'Pandora', 
+    color: '#005483',
+    logo: 'https://cdn.simpleicons.org/pandora/005483'
+  },
+  audiomack: { 
+    icon: 'ri-music-2-fill', 
+    name: 'Audiomack', 
+    color: '#FFB80A',
+    logo: 'https://cdn.simpleicons.org/audiomack/FFB80A'
+  },
+  napster: { 
+    icon: 'ri-disc-fill', 
+    name: 'Napster', 
+    color: '#000000',
+    logo: 'https://cdn.simpleicons.org/napster/000000'
+  },
+  qobuz: { 
+    icon: 'ri-music-fill', 
+    name: 'Qobuz', 
+    color: '#1E4474',
+    logo: 'https://cdn.simpleicons.org/qobuz/1E4474'
+  },
+  tencent_music: { 
+    icon: 'ri-music-2-line', 
+    name: 'Tencent Music', 
+    color: '#0E88EB',
+    logo: 'https://cdn.simpleicons.org/tencentqq/0E88EB'
+  }
+}
 
 const notify = (message, color = '#10b981') => {
   const modal = document.createElement('div')
@@ -779,11 +1027,9 @@ document.getElementById('accessBlockerUpgradeBtn').addEventListener('click', sho
 document.getElementById('upgradeToPro').addEventListener('click', async () => {
   if (!window.currentSession) return
   
-  // Hide the upgrade button temporarily and show PayPal button
   const upgradeBtn = document.getElementById('upgradeToPro')
   upgradeBtn.style.display = 'none'
   
-  // Create PayPal button container if it doesn't exist
   let paypalContainer = document.getElementById('paypal-button-container')
   if (!paypalContainer) {
     paypalContainer = document.createElement('div')
@@ -791,7 +1037,6 @@ document.getElementById('upgradeToPro').addEventListener('click', async () => {
     upgradeBtn.parentNode.insertBefore(paypalContainer, upgradeBtn.nextSibling)
   }
   
-  // Render PayPal button
   paypal.Buttons({
     createOrder: function(data, actions) {
       return actions.order.create({
@@ -806,7 +1051,6 @@ document.getElementById('upgradeToPro').addEventListener('click', async () => {
     },
     onApprove: async function(data, actions) {
       return actions.order.capture().then(async function(details) {
-        // Payment successful, upgrade user
         try {
           const { error } = await supabase
             .from('profiles')
@@ -818,6 +1062,9 @@ document.getElementById('upgradeToPro').addEventListener('click', async () => {
             .eq('id', window.currentSession.user.id)
           
           if (error) throw error
+          
+          // Track Pro upgrade from invite if applicable
+          await trackProUpgrade(window.currentSession.user.id)
           
           notify('🎉 Payment successful! Upgrading to Pro...', '#10b981')
           setTimeout(() => window.location.reload(), 1500)
@@ -842,6 +1089,224 @@ document.getElementById('upgradeToPro').addEventListener('click', async () => {
   }).render('#paypal-button-container')
 })
 
+// ========== INVITE SYSTEM FUNCTIONS ==========
+
+// Generate or get existing invite code
+const getInviteCode = async (userId) => {
+  try {
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select('invite_code')
+      .eq('id', userId)
+      .single()
+    
+    if (profileError) {
+      console.log('Could not fetch profile for invite code:', profileError)
+      return null
+    }
+    
+    if (profile.invite_code && profile.invite_code.trim() !== '') {
+      return profile.invite_code
+    }
+    
+    // Try database function first
+    try {
+      const { data, error } = await supabase
+        .rpc('get_or_create_invite_code', { user_id: userId })
+      
+      if (!error && data) {
+        return data
+      }
+    } catch (rpcErr) {
+      console.log('Database function not available, generating manually')
+    }
+    
+    // Fallback: generate code manually
+    const newCode = Math.random().toString(36).substring(2, 10).toUpperCase()
+    
+    const { error: updateError } = await supabase
+      .from('profiles')
+      .update({ invite_code: newCode })
+      .eq('id', userId)
+    
+    if (updateError) {
+      console.log('Could not save invite code:', updateError)
+      return null
+    }
+    
+    return newCode
+  } catch (error) {
+    console.log('Error getting invite code:', error)
+    return null
+  }
+}
+
+// Get invite stats
+const getInviteStats = async (userId) => {
+  try {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('invite_pro')
+      .eq('id', userId)
+      .single()
+    
+    if (error) {
+      console.log('Could not fetch invite stats:', error)
+      return { proInvites: 0 }
+    }
+    
+    return {
+      proInvites: data.invite_pro || 0
+    }
+  } catch (error) {
+    console.log('Error getting invite stats:', error)
+    return { proInvites: 0 }
+  }
+}
+
+// Setup invite link generator
+const setupInviteSystem = async (userId) => {
+  try {
+    const inviteCode = await getInviteCode(userId)
+    
+    if (!inviteCode) {
+      console.log('Could not get invite code')
+      return
+    }
+    
+    const inviteLink = `https://pro.vynal.dev?invite=${inviteCode}`
+    
+    const inviteLinkDisplay = document.getElementById('inviteLinkDisplay')
+    if (inviteLinkDisplay) {
+      inviteLinkDisplay.value = inviteLink
+    }
+    
+    const copyBtn = document.getElementById('copyInviteLinkBtn')
+    if (copyBtn) {
+      copyBtn.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(inviteLink)
+          
+          const originalHTML = copyBtn.innerHTML
+          copyBtn.innerHTML = '<i class="ri-check-line"></i> Copied!'
+          copyBtn.style.background = '#10b981'
+          
+          setTimeout(() => {
+            copyBtn.innerHTML = originalHTML
+            copyBtn.style.background = '#667eea'
+          }, 2000)
+          
+          notify('Invite link copied! Share it with friends to earn rewards.', '#10b981')
+        } catch (err) {
+          console.error('Failed to copy:', err)
+          
+          inviteLinkDisplay.select()
+          document.execCommand('copy')
+          notify('Invite link copied!', '#10b981')
+        }
+      })
+    }
+    
+    // Get and display invite stats
+    try {
+      const stats = await getInviteStats(userId)
+      const proInviteCountEl = document.getElementById('proInviteCount')
+      if (proInviteCountEl) {
+        proInviteCountEl.textContent = stats.proInvites
+      }
+    } catch (statsErr) {
+      console.log('Could not load invite stats (non-critical):', statsErr)
+    }
+  } catch (error) {
+    console.log('Error setting up invite system (non-critical):', error)
+  }
+}
+
+// Check for invite code in URL
+const checkInviteCode = async () => {
+  const urlParams = new URLSearchParams(window.location.search)
+  const inviteCode = urlParams.get('invite')
+  
+  if (inviteCode) {
+    localStorage.setItem('vynal_invite_code', inviteCode)
+    
+    const { data: { session } } = await supabase.auth.getSession()
+    if (session?.user?.id) {
+      await logInviteUsage(inviteCode, session.user.id)
+    }
+    
+    if (!isPro && inviteCode) {
+      setTimeout(() => {
+        showPremiumBottomSheet()
+      }, 500)
+    }
+  }
+}
+
+// Log invite usage
+const logInviteUsage = async (inviteCode, userId) => {
+  try {
+    // Try using database function if it exists
+    const { error } = await supabase
+      .rpc('log_invite_usage', {
+        p_invite_code: inviteCode,
+        p_invitee_id: userId
+      })
+    
+    if (error) {
+      // If function doesn't exist, silently skip (not critical)
+      console.log('Invite tracking not yet enabled:', error.message)
+    }
+  } catch (error) {
+    // Don't block dashboard if invite tracking fails
+    console.log('Invite tracking error (non-critical):', error)
+  }
+}
+
+// Track pro upgrade from invite
+const trackProUpgrade = async (userId) => {
+  try {
+    const inviteCode = localStorage.getItem('vynal_invite_code')
+    
+    if (!inviteCode) return
+    
+    // Try to track pro invite
+    try {
+      const { error: trackError } = await supabase
+        .rpc('track_pro_invite', {
+          inviter_code: inviteCode,
+          new_user_id: userId
+        })
+      
+      if (trackError) {
+        console.log('Pro invite tracking not enabled:', trackError.message)
+      }
+    } catch (trackErr) {
+      console.log('Pro invite tracking error (non-critical):', trackErr)
+    }
+    
+    // Try to mark upgrade
+    try {
+      const { error: markError } = await supabase
+        .rpc('mark_pro_upgrade_from_invite', {
+          p_invitee_id: userId
+        })
+      
+      if (markError) {
+        console.log('Upgrade marking not enabled:', markError.message)
+      }
+    } catch (markErr) {
+      console.log('Upgrade marking error (non-critical):', markErr)
+    }
+    
+    // Clear invite code regardless
+    localStorage.removeItem('vynal_invite_code')
+    
+  } catch (error) {
+    console.log('Error in trackProUpgrade (non-critical):', error)
+  }
+}
+
 const initAuth = async () => {
   const { data: { session } } = await supabase.auth.getSession()
   if (!session) return window.location.href = 'register'
@@ -851,6 +1316,12 @@ const initAuth = async () => {
   window.currentUser = profile
   window.currentSession = session
   isPro = profile.tier === 'pro'
+  
+  // FIX #2: Enable upgrade button after session is confirmed
+  const upgradeBtn = document.getElementById('accessBlockerUpgradeBtn')
+  if (upgradeBtn) {
+    upgradeBtn.disabled = false
+  }
   
   if (!isPro) {
     document.getElementById('accessBlocker').classList.add('active')
@@ -955,24 +1426,59 @@ const canUpload = async (userId, type) => {
 
 const uploadAudio = async (file, session) => {
   if (!file.type.startsWith('audio/')) throw new Error('Only audio files allowed')
- if (file.size > 4*1024*1024) throw new Error('Max 4MB')
+  if (file.size > 4*1024*1024) throw new Error('Max 4MB')
 
-  
   const check = await canUpload(session.user.id, 'audio')
   if (!check.allowed) {
     if (check.showUpgrade) showPremiumBottomSheet()
     throw new Error(check.message)
   }
 
-  const audio = new Audio()
+  // FIX #4: Create audio element in DOM for iOS compatibility
+  const audioElement = document.createElement('audio')
+  audioElement.style.display = 'none'
+  audioElement.preload = 'metadata'
+  document.body.appendChild(audioElement)
+
   const duration = await new Promise((res, rej) => {
-    audio.src = URL.createObjectURL(file)
-    audio.onloadedmetadata = () => {
-      const dur = Math.floor(audio.duration)
-      URL.revokeObjectURL(audio.src)
-      dur > 120 ? rej(new Error('Max 120 seconds')) : res(dur)
+    const objectUrl = URL.createObjectURL(file)
+    audioElement.src = objectUrl
+
+    const cleanup = () => {
+      URL.revokeObjectURL(objectUrl)
+      document.body.removeChild(audioElement)
     }
-    audio.onerror = () => rej(new Error('Invalid audio'))
+
+    audioElement.onloadedmetadata = () => {
+      const dur = Math.floor(audioElement.duration)
+      cleanup()
+      if (dur > 120) {
+        rej(new Error('Max 120 seconds'))
+      } else {
+        res(dur)
+      }
+    }
+
+    audioElement.onerror = () => {
+      cleanup()
+      rej(new Error('Invalid audio'))
+    }
+
+    // Timeout fallback for iOS
+    setTimeout(() => {
+      if (audioElement.duration) {
+        const dur = Math.floor(audioElement.duration)
+        cleanup()
+        if (dur > 120) {
+          rej(new Error('Max 120 seconds'))
+        } else {
+          res(dur)
+        }
+      } else {
+        cleanup()
+        rej(new Error('Could not load audio metadata'))
+      }
+    }, 5000)
   })
 
   const fileName = `${session.user.id}/${Date.now()}.${file.name.split('.').pop()}`
@@ -1080,19 +1586,20 @@ const getAnalyticsData = async (userId) => {
 const setupAdvancedAnalytics = async (userId) => {
   const { previews, listeners } = await getAnalyticsData(userId)
   
-  const platformCounts = { youtube: 0, instagram: 0, spotify: 0, apple_music: 0 }
-  const platformActions = { 
-    youtube: { play: 0, click: 0 }, 
-    instagram: { play: 0, click: 0 }, 
-    spotify: { play: 0, click: 0 }, 
-    apple_music: { play: 0, click: 0 } 
-  }
+  const platformCounts = {}
+  const platformActions = {}
+  
+  Object.keys(platformConfig).forEach(key => {
+    platformCounts[key] = 0
+    platformActions[key] = { play: 0, click: 0 }
+  })
   
   previews.forEach(p => {
     const previewListeners = listeners.filter(l => l.preview_id === p.id)
     platformCounts[p.platform] = (platformCounts[p.platform] || 0) + previewListeners.length
     
     previewListeners.forEach(l => {
+      if (!platformActions[p.platform]) platformActions[p.platform] = { play: 0, click: 0 }
       if (l.action_type === 'play') platformActions[p.platform].play++
       else if (l.action_type === 'click') platformActions[p.platform].click++
     })
@@ -1147,18 +1654,25 @@ const renderPlatformChart = (platformCounts) => {
 
   if (analyticsCharts.platform) analyticsCharts.platform.destroy()
 
+  const labels = []
+  const data = []
+  const colors = []
+  
+  Object.entries(platformCounts).forEach(([key, count]) => {
+    if (count > 0) {
+      labels.push(platformConfig[key]?.name || key)
+      data.push(count)
+      colors.push(platformConfig[key]?.color || '#999999')
+    }
+  })
+
   analyticsCharts.platform = new Chart(ctx, {
     type: 'doughnut',
     data: {
-      labels: ['YouTube', 'Instagram', 'Spotify', 'Apple Music'],
+      labels: labels,
       datasets: [{
-        data: [
-          platformCounts.youtube,
-          platformCounts.instagram,
-          platformCounts.spotify,
-          platformCounts.apple_music
-        ],
-        backgroundColor: ['#FF0000', '#E4405F', '#1DB954', '#ffffff'],
+        data: data,
+        backgroundColor: colors,
         borderWidth: 0
       }]
     },
@@ -1314,30 +1828,32 @@ const renderPlatformActionChart = (platformActions) => {
   ctx.style.display = 'block'
   if (analyticsCharts.platformAction) analyticsCharts.platformAction.destroy()
 
+  const labels = []
+  const playsData = []
+  const clicksData = []
+  
+  Object.entries(platformActions).forEach(([key, actions]) => {
+    if (actions.play > 0 || actions.click > 0) {
+      labels.push(platformConfig[key]?.name || key)
+      playsData.push(actions.play)
+      clicksData.push(actions.click)
+    }
+  })
+
   analyticsCharts.platformAction = new Chart(ctx, {
     type: 'bar',
     data: {
-      labels: ['YouTube', 'Instagram', 'Spotify', 'Apple Music'],
+      labels: labels,
       datasets: [
         {
           label: 'Audio Plays',
-          data: [
-            platformActions.youtube.play,
-            platformActions.instagram.play,
-            platformActions.spotify.play,
-            platformActions.apple_music.play
-          ],
+          data: playsData,
           backgroundColor: '#1DB954',
           borderRadius: 8
         },
         {
           label: 'Link Clicks',
-          data: [
-            platformActions.youtube.click,
-            platformActions.instagram.click,
-            platformActions.spotify.click,
-            platformActions.apple_music.click
-          ],
+          data: clicksData,
           backgroundColor: '#E4405F',
           borderRadius: 8
         }
@@ -1386,13 +1902,6 @@ const renderTopReleasesChart = (releaseStats) => {
 
   if (analyticsCharts.topReleases) analyticsCharts.topReleases.destroy()
 
-  const platformColors = {
-    youtube: '#FF0000',
-    instagram: '#E4405F',
-    spotify: '#1DB954',
-    apple_music: 'white'
-  }
-
   analyticsCharts.topReleases = new Chart(ctx, {
     type: 'bar',
     data: {
@@ -1400,7 +1909,7 @@ const renderTopReleasesChart = (releaseStats) => {
       datasets: [{
         label: 'Total Listeners',
         data: releaseStats.map(r => r.listeners),
-        backgroundColor: releaseStats.map(r => platformColors[r.platform]),
+        backgroundColor: releaseStats.map(r => platformConfig[r.platform]?.color || '#999999'),
         borderRadius: 8
       }]
     },
@@ -1516,13 +2025,6 @@ const renderEngagementStats = (listeners, previews) => {
   `
 }
 
-const platformConfig = {
-  youtube: { icon: 'ri-youtube-fill', name: 'YouTube', color: '#FF0000' },
-  instagram: { icon: 'ri-instagram-fill', name: 'Instagram', color: '#E4405F' },
-  spotify: { icon: 'ri-spotify-fill', name: 'Spotify', color: '#1DB954' },
-  apple_music: { icon: 'ri-apple-fill', name: 'Apple Music', color: '#ffffff' }
-}
-
 const buildPreviewCard = (preview) => {
   const cfg = platformConfig[preview.platform]
   const thumb = preview.thumbnail_url || window.currentUser?.profile_picture || 'user.webp'
@@ -1551,8 +2053,8 @@ const buildPreviewCard = (preview) => {
               <i class="ri-delete-bin-line ri-xl delete-icon"></i>
             </button>
             <a href="${preview.release_url}" target="_blank">
-              <button class="btn-icon platform-icon-btn" title="Open ${cfg.name}">
-                <i class="${cfg.icon} ri-xl"></i>
+              <button class="btn-icon platform-icon-btn" title="Open ${cfg?.name || 'Platform'}">
+                <i class="${cfg?.icon || 'ri-music-line'} ri-xl"></i>
               </button>
             </a>
           </div>
@@ -1581,7 +2083,7 @@ const buildPreviewCard = (preview) => {
         <div class="row preview-stats">
           <div class="col-4"><div class="muted t-s">Listeners</div><div class="nowrap t-800 listener-count">0</div></div>
           <div class="col-34"><div class="muted t-s">Duration</div><div class="t-800">${formatTime(preview.duration_seconds||0)}</div></div>
-          <div class="col-4"><div><span class="t-600 t-sm platform-tag">${cfg.name.toUpperCase()}</span></div><div class="muted t-s">Platform</div></div>
+          <div class="col-4"><div><span class="t-600 t-sm platform-tag">${(cfg?.name || 'Platform').toUpperCase()}</span></div><div class="muted t-s">Platform</div></div>
         </div>
       </div>
     </div>
@@ -1680,11 +2182,16 @@ const loadPreviews = async (userId) => {
           <img src="pro-dark.png" alt="No Releases" class="no-releases-image" />
           <h3 class="no-releases-title">No Releases Yet</h3>
           <p class="no-releases-text">Start sharing your music by adding your first release above.</p>
-          <div class="platform-grid">
-            <div class="platform-item"><i class="ri-spotify-fill platform-spotify"></i><div>Spotify</div></div>
-            <div class="platform-item"><i class="ri-youtube-fill platform-youtube"></i><div>YouTube</div></div>
-            <div class="platform-item"><i class="ri-instagram-fill platform-instagram"></i><div>Instagram</div></div>
-            <div class="platform-item"><i class="ri-apple-fill platform-apple"></i><div>Apple Music</div></div>
+          <div class="platform-grid-expanded">
+            ${Object.entries(platformConfig).slice(0, 8).map(([key, cfg]) => `
+              <div class="platform-card">
+                <div class="platform-card-logo">
+                  <img src="${cfg.logo}" alt="${cfg.name}" />
+                </div>
+                <div class="platform-card-name">${cfg.name}</div>
+                <div class="platform-card-type">Streaming</div>
+              </div>
+            `).join('')}
           </div>
         </div>
       </div>
@@ -1695,52 +2202,122 @@ const loadPreviews = async (userId) => {
   const links = await getSocialLinks(userId)
   const grouped = previews.reduce((acc, p) => ({ ...acc, [p.platform]: [...(acc[p.platform]||[]), p] }), {})
 
-  container.innerHTML = ''
+  // FIX #1: DOM DIFFING - Build map of existing elements
+  const existingPlatformSections = new Map()
+  container.querySelectorAll('.posts.span-4').forEach(section => {
+    const platformHeader = section.querySelector('.platform-post-header')
+    if (platformHeader) {
+      const platformIcon = platformHeader.querySelector('i[class*="ri-"]')
+      const platformText = platformHeader.querySelector('strong a')?.textContent
+      
+      // Try to identify platform from icon or text
+      let foundPlatform = null
+      for (const [key, cfg] of Object.entries(platformConfig)) {
+        if (platformIcon?.className.includes(cfg.icon.replace('ri-', '')) || platformText === cfg.name) {
+          foundPlatform = key
+          break
+        }
+      }
+      
+      if (foundPlatform) {
+        existingPlatformSections.set(foundPlatform, section)
+      }
+    }
+  })
+
+  const newPlatforms = new Set(Object.keys(grouped))
+  
+  // Remove platform sections that no longer exist
+  existingPlatformSections.forEach((section, platform) => {
+    if (!newPlatforms.has(platform)) {
+      section.remove()
+    }
+  })
 
   Object.entries(grouped).forEach(([platform, items]) => {
     const cfg = platformConfig[platform]
+    if (!cfg) return
+    
     const username = links[platform]?.username || window.currentUser?.stage_name || 'Artist'
 
-    const section = document.createElement('div')
-    section.className = 'posts span-4'
-    section.innerHTML = `
-      <div class="platform-section-header">
-        <div class="post-header platform-post-header">
-          <div class="post-header-left">
-            <span><i class="${cfg.icon} ri-xl" style="color:${cfg.color};"></i></span>
-            <div class="post-header-info">
-              <strong><a>${cfg.name}</a><a class="t-sm t-400">@${username}</a></strong>
-              <div class="muted"><a class="profile">Available here!</a></div>
+    let section = existingPlatformSections.get(platform)
+    
+    if (!section) {
+      // Create new section
+      section = document.createElement('div')
+      section.className = 'posts span-4'
+      section.dataset.platform = platform
+      section.innerHTML = `
+        <div class="platform-section-header">
+          <div class="post-header platform-post-header">
+            <div class="post-header-left">
+              <span><i class="${cfg.icon} ri-xl" style="color:${cfg.color};"></i></span>
+              <div class="post-header-info">
+                <strong><a>${cfg.name}</a><a class="t-sm t-400">@${username}</a></strong>
+                <div class="muted"><a class="profile">Available here!</a></div>
+              </div>
+            </div>
+            <div class="post-header-right">
+              <a href="${links[platform]?.url||'#'}" target="_blank">
+                <button class="btn primary external-link-btn" title="Visit ${cfg.name}">
+                  <i class="ri-external-link-line ri-xl"></i>
+                </button>
+              </a>
+              <button class="btn primary platform-share-btn" data-platform="${platform}" data-username="${username}" title="Copy ${cfg.name} link">
+                <i class="ri-share-line ri-xl"></i>
+              </button>
+              <button class="btn primary platform-delete-all-btn" data-platform="${platform}" data-count="${items.length}" title="Delete all ${cfg.name} releases">
+                <i class="ri-delete-bin-line ri-xl"></i>
+              </button>
             </div>
           </div>
-          <div class="post-header-right">
-            <a href="${links[platform]?.url||'#'}" target="_blank">
-              <button class="btn primary external-link-btn" title="Visit ${cfg.name}">
-                <i class="ri-external-link-line ri-xl"></i>
-              </button>
-            </a>
-            <button class="btn primary platform-share-btn" data-platform="${platform}" data-username="${username}" title="Copy ${cfg.name} link">
-              <i class="ri-share-line ri-xl"></i>
-            </button>
-            <button class="btn primary platform-delete-all-btn" data-platform="${platform}" data-count="${items.length}" title="Delete all ${cfg.name} releases">
-              <i class="ri-delete-bin-line ri-xl"></i>
-            </button>
-          </div>
         </div>
-      </div>
-      <section class="grid-12 platform-releases-grid"></section>
-    `
+        <section class="grid-12 platform-releases-grid"></section>
+      `
+      container.appendChild(section)
+    } else {
+      // Update existing section header data
+      const deleteBtn = section.querySelector('.platform-delete-all-btn')
+      if (deleteBtn) deleteBtn.dataset.count = items.length
+    }
 
     const grid = section.querySelector('.platform-releases-grid')
-    items.forEach(p => {
-      grid.insertAdjacentHTML('beforeend', buildPreviewCard(p))
-      setTimeout(() => {
-        const card = grid.querySelector(`[data-preview-id="${p.id}"]`)
-        if (p.preview_audio_url) initAudioPlayer(card, p.id)
-      }, 100)
+    
+    // Build map of existing preview cards
+    const existingCards = new Map()
+    grid.querySelectorAll('[data-preview-id]').forEach(card => {
+      existingCards.set(card.dataset.previewId, card)
     })
 
-    container.appendChild(section)
+    const newPreviewIds = new Set(items.map(p => p.id))
+    
+    // Remove cards that no longer exist
+    existingCards.forEach((card, id) => {
+      if (!newPreviewIds.has(id)) {
+        card.remove()
+      }
+    })
+
+    items.forEach(p => {
+      const existingCard = existingCards.get(p.id)
+      
+      if (!existingCard) {
+        // Create new card
+        grid.insertAdjacentHTML('beforeend', buildPreviewCard(p))
+        setTimeout(() => {
+          const card = grid.querySelector(`[data-preview-id="${p.id}"]`)
+          if (p.preview_audio_url) initAudioPlayer(card, p.id)
+        }, 100)
+      } else {
+        // Card exists - update non-audio content only
+        const releaseNameEl = existingCard.querySelector('.audio-title') || existingCard.querySelector('.t-400')
+        if (releaseNameEl) {
+          releaseNameEl.textContent = p.release_name
+        }
+        
+        // Don't touch audio player to preserve playback state
+      }
+    })
   })
 
   previews.forEach(async p => {
@@ -1793,22 +2370,12 @@ const setupEditModal = (session) => {
           <div class="custom-select-edit">
             <div class="select-selected-edit btn ghost t-sm" style="background: none;color: white">Select Platform</div>
             <div class="select-items-edit" style="display:grid;grid-template-columns:repeat(auto-fit, minmax(140px, 1fr));gap:12px;padding-top:10px;">
-              <div data-platform="youtube" style="display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:10px;cursor:pointer;background:rgba(255,255,255,0.04);transition:all .25s ease;" onmouseover="this.style.background='rgba(255,0,0,0.12)'" onmouseout="this.style.background='rgba(255,255,255,0.04)'">
-                <i class="ri-youtube-fill" style="font-size:20px;color:#ff0000;"></i>
-                <span>YouTube</span>
-              </div>
-              <div data-platform="instagram" style="display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:10px;cursor:pointer;background:rgba(255,255,255,0.04);transition:all .25s ease;" onmouseover="this.style.background='rgba(225,48,108,0.15)'" onmouseout="this.style.background='rgba(255,255,255,0.04)'">
-                <i class="ri-instagram-fill" style="font-size:20px;color:#e1306c;"></i>
-                <span>Instagram</span>
-              </div>
-              <div data-platform="spotify" style="display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:10px;cursor:pointer;background:rgba(255,255,255,0.04);transition:all .25s ease;" onmouseover="this.style.background='rgba(30,215,96,0.15)'" onmouseout="this.style.background='rgba(255,255,255,0.04)'">
-                <i class="ri-spotify-fill" style="font-size:20px;color:white;"></i>
-                <span>Spotify</span>
-              </div>
-              <div data-platform="apple_music" style="display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:10px;cursor:pointer;background:rgba(255,255,255,0.04);transition:all .25s ease;" onmouseover="this.style.background='rgba(255,45,85,0.15)'" onmouseout="this.style.background='rgba(255,255,255,0.04)'">
-                <i class="ri-apple-fill" style="font-size:20px;color:#ff2d55;"></i>
-                <span>Apple Music</span>
-              </div>
+              ${Object.entries(platformConfig).map(([key, cfg]) => `
+                <div class="platform-select-option" data-platform="${key}" style="display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:10px;cursor:pointer;background:rgba(255,255,255,0.04);transition:all .25s ease;">
+                  <img src="${cfg.logo}" alt="${cfg.name}" style="width:24px;height:24px;object-fit:contain;" />
+                  <span>${cfg.name}</span>
+                </div>
+              `).join('')}
             </div>
           </div>
         </div>
@@ -1857,11 +2424,16 @@ const setupEditModal = (session) => {
     }
   })
 
-  modal.querySelectorAll('.select-items-edit div').forEach(opt => {
+  modal.querySelectorAll('.platform-select-option').forEach(opt => {
     opt.onclick = (e) => {
       e.stopPropagation()
       editSelectedPlatform = opt.dataset.platform
-      editPlatformSelect.innerHTML = `${opt.textContent}`
+      const platformName = platformConfig[editSelectedPlatform]?.name || 'Platform'
+      editPlatformSelect.innerHTML = `${platformName}`
+      
+      modal.querySelectorAll('.platform-select-option').forEach(o => o.classList.remove('selected'))
+      opt.classList.add('selected')
+      
       editCustomSelect.classList.remove('active')
     }
   })
@@ -2008,8 +2580,8 @@ const setupEditModal = (session) => {
       modal.querySelector('#editReleaseName').value = preview.release_name
       modal.querySelector('#editReleaseUrl').value = preview.release_url
 
-      const platformNames = { youtube: 'YouTube', instagram: 'Instagram', spotify: 'Spotify', apple_music: 'Apple Music' }
-      editPlatformSelect.innerHTML = `${platformNames[preview.platform] || 'Select Platform'}`
+      const platformName = platformConfig[preview.platform]?.name || 'Platform'
+      editPlatformSelect.innerHTML = `${platformName}`
       editSelectedPlatform = preview.platform
 
       if (preview.preview_audio_url) {
@@ -2035,9 +2607,20 @@ const setupForm = (session) => {
   const platformNameToKey = {
     'Youtube': 'youtube',
     'YouTube': 'youtube',
+    'YouTube Music': 'youtube_music',
     'Instagram': 'instagram',
     'Spotify': 'spotify',
-    'Apple Music': 'apple_music'
+    'Apple Music': 'apple_music',
+    'Tidal': 'tidal',
+    'Deezer': 'deezer',
+    'SoundCloud': 'soundcloud',
+    'Bandcamp': 'bandcamp',
+    'Amazon Music': 'amazon_music',
+    'Pandora': 'pandora',
+    'Audiomack': 'audiomack',
+    'Napster': 'napster',
+    'Qobuz': 'qobuz',
+    'Tencent Music': 'tencent_music'
   }
 
   const customSelect = document.querySelector('#uploadForm .custom-select')
@@ -2047,430 +2630,229 @@ const setupForm = (session) => {
     const observer = new MutationObserver(() => {
       const displayText = selected.textContent.trim()
       const platformKey = platformNameToKey[displayText]
-      
-      if (platformKey) {
-        selectedPlatform = platformKey
-      }
-    })
-    
-    observer.observe(selected, { 
-      childList: true, 
-      characterData: true, 
-      subtree: true 
-    })
-    
-    setTimeout(() => {
-      document.querySelectorAll('.select-items-portal div').forEach(item => {
-        item.addEventListener('click', () => {
-          const displayText = item.textContent.trim()
-          const platformKey = platformNameToKey[displayText]
-          
-          if (platformKey) {
-            selectedPlatform = platformKey
+            if (platformKey) {
+        selectedPlatform = platformKey;
+        // Autofill username if the user already has a link for this platform
+        getSocialLinks(session.user.id).then(links => {
+          if (links[platformKey]) {
+            document.getElementById('uDesc').value = links[platformKey].username;
           }
-        })
-      })
-    }, 100)
+        });
+      }
+    });
+    observer.observe(selected, { childList: true, characterData: true, subtree: true });
   }
 
-  const dropzone = document.getElementById('dropAudio')
-  const fileInput = document.getElementById('uFile')
+  const dropAudio = document.getElementById('dropAudio');
+  const uFile = document.getElementById('uFile');
 
-  dropzone.onclick = () => fileInput.click()
-  
-  dropzone.ondragover = (e) => {
-    e.preventDefault()
-    dropzone.classList.add('dragover')
-  }
-  
-  dropzone.ondragleave = () => {
-    dropzone.classList.remove('dragover')
-  }
-  
-  dropzone.ondrop = (e) => {
-    e.preventDefault()
-    dropzone.classList.remove('dragover')
-    const file = e.dataTransfer.files[0]
-    if (file && file.type.startsWith('audio/')) {
-      selectedFile = file
-      dropzone.innerHTML = `<i class="ri-music-2-line"></i> ${file.name}`
-    }
-  }
-
-  fileInput.onchange = (e) => {
-    selectedFile = e.target.files[0]
-    if (selectedFile) {
-      dropzone.innerHTML = `<i class="ri-music-2-line"></i> ${selectedFile.name}`
-    }
-  }
-
-  document.getElementById('uReset').onclick = () => {
-    form.reset()
-    selectedFile = null
-    selectedPlatform = null
-    dropzone.innerHTML = '<i class="ri-upload-cloud-2-line"></i> Drop audio file preview here or <u>browse</u>'
-    if (selected) selected.textContent = 'Select Platform'
-  }
+  dropAudio.onclick = () => uFile.click();
+  uFile.onchange = (e) => {
+    selectedFile = e.target.files[0];
+    if (selectedFile) dropAudio.innerHTML = `<i class="ri-music-2-line"></i> ${selectedFile.name}`;
+  };
 
   form.onsubmit = async (e) => {
-    e.preventDefault()
-
-    const username = document.getElementById('uDesc').value.trim()
-    const releaseName = document.getElementById('uTags').value.trim()
-    const releaseUrl = document.getElementById('uBpm').value.trim()
-    const submitBtn = document.getElementById('uSubmit')
+    e.preventDefault();
+    const username = document.getElementById('uDesc').value.trim();
+    const releaseName = document.getElementById('uTags').value.trim();
+    const releaseUrl = document.getElementById('uBpm').value.trim();
+    const submitBtn = document.getElementById('uSubmit');
 
     if (!selectedPlatform || !username || !releaseName || !releaseUrl) {
-      return notify('Please fill all fields', '#ef4444')
+      return notify('Please fill in all fields and select a platform', '#ef4444');
     }
 
-    const releaseCheck = await canUpload(session.user.id, 'release')
+    const releaseCheck = await canUpload(session.user.id, 'release');
     if (!releaseCheck.allowed) {
-      if (releaseCheck.showUpgrade) showPremiumBottomSheet()
-      return notify(releaseCheck.message, '#ef4444')
+      if (releaseCheck.showUpgrade) showPremiumBottomSheet();
+      return notify(releaseCheck.message, '#ef4444');
     }
 
-    submitBtn.disabled = true
-    submitBtn.innerHTML = '<i class="ri-loader-4-line"></i> Uploading...'
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="ri-loader-4-line ri-spin"></i> Uploading...';
 
     try {
-      const url = releaseUrl.includes('://') ? releaseUrl : `https://${releaseUrl}`
-      await saveSocialLink(selectedPlatform, username, url, session.user.id)
+      const url = releaseUrl.includes('://') ? releaseUrl : `https://${releaseUrl}`;
+      await saveSocialLink(selectedPlatform, username, url, session.user.id);
 
-      let audioData = null
+      let audioData = { url: null, duration: 0 };
       if (selectedFile) {
-        submitBtn.innerHTML = '<i class="ri-upload-cloud-2-line"></i> Processing audio...'
-        audioData = await uploadAudio(selectedFile, session)
+        audioData = await uploadAudio(selectedFile, session);
       }
 
-      const { error: insertError } = await supabase.from('music_previews').insert({
+      const { error } = await supabase.from('music_previews').insert({
         user_id: session.user.id,
         platform: selectedPlatform,
         release_name: releaseName,
         release_url: url,
-        preview_audio_url: audioData?.url || null,
-        duration_seconds: audioData?.duration || null,
-        thumbnail_url: window.currentUser?.profile_picture || null,
-        is_active: true,
-        created_at: new Date().toISOString()
-      })
+        preview_audio_url: audioData.url,
+        duration_seconds: audioData.duration,
+        is_active: true
+      });
 
-      if (insertError) throw insertError
+      if (error) throw error;
 
-      const { error: countError } = await supabase.rpc('increment_release_count', {
-        user_id: session.user.id
-      })
-
-      if (countError) console.warn('Count update failed:', countError)
-
-      if (audioData) {
-        const { error: audioCountError } = await supabase.rpc('increment_audio_count', {
-          user_id: session.user.id
-        })
-        if (audioCountError) console.warn('Audio count update failed:', audioCountError)
-      }
-
-      notify('Release uploaded successfully!', '#10b981')
+      notify('Release added successfully!', '#10b981');
+      form.reset();
+      selectedFile = null;
+      dropAudio.innerHTML = '<i class="ri-upload-cloud-2-line"></i> Drop audio file preview here or <u>browse</u>';
       
-      form.reset()
-      selectedFile = null
-      selectedPlatform = null
-      dropzone.innerHTML = '<i class="ri-upload-cloud-2-line"></i> Drop audio file preview here or <u>browse</u>'
-      if (selected) selected.textContent = 'Select Platform'
+      await loadPreviews(session.user.id);
+      await setupAdvancedAnalytics(session.user.id);
+      await updateLimitsDisplay(session.user.id);
 
-      await loadPreviews(session.user.id)
-      await setupAdvancedAnalytics(session.user.id)
-      await updateLimitsDisplay(session.user.id)
-
-    } catch (error) {
-      notify(error.message || 'Upload failed', '#ef4444')
+    } catch (err) {
+      notify(err.message, '#ef4444');
     } finally {
-      submitBtn.disabled = false
-      submitBtn.innerHTML = '<i class="ri-upload-2-line"></i> Upload'
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = '<i class="ri-upload-2-line"></i> Upload';
     }
-  }
-}
+  };
+};
 
-const setupDeleteHandlers = (session) => {
+const setupDeletion = (session) => {
   document.addEventListener('click', async (e) => {
-    const deleteBtn = e.target.closest('.delete-preview-btn')
-    if (!deleteBtn) return
-
-    const previewId = deleteBtn.dataset.previewId
-    const confirmed = await confirm('Are you sure you want to delete this release? This action cannot be undone.')
-    
-    if (!confirmed) return
-
-    try {
-      const { data: preview } = await supabase
-        .from('music_previews')
-        .select('preview_audio_url')
-        .eq('id', previewId)
-        .eq('user_id', session.user.id)
-        .single()
-
-      if (preview?.preview_audio_url) {
-        try {
-          const path = new URL(preview.preview_audio_url).pathname.split('/audio-previews/')[1]
-          if (path) await supabase.storage.from('audio-previews').remove([path])
-        } catch (err) {
-          console.warn('Audio file deletion warning:', err)
-        }
+    // Single Delete
+    const delBtn = e.target.closest('.delete-preview-btn');
+    if (delBtn) {
+      const id = delBtn.dataset.previewId;
+      const confirmed = await confirm('Are you sure you want to delete this release?');
+      if (confirmed) {
+        await supabase.from('music_previews').update({ is_active: false }).eq('id', id);
+        notify('Release deleted', '#3b82f6');
+        loadPreviews(session.user.id);
+        setupAdvancedAnalytics(session.user.id);
       }
-
-      const { error } = await supabase
-        .from('music_previews')
-        .update({ is_active: false })
-        .eq('id', previewId)
-        .eq('user_id', session.user.id)
-
-      if (error) throw error
-
-      notify('Release deleted', '#10b981')
-      await loadPreviews(session.user.id)
-      await setupAdvancedAnalytics(session.user.id)
-      await updateLimitsDisplay(session.user.id)
-
-    } catch (error) {
-      notify('Delete failed', '#ef4444')
     }
-  })
 
-  document.addEventListener('click', async (e) => {
-    const deleteAllBtn = e.target.closest('.platform-delete-all-btn')
-    if (!deleteAllBtn) return
-
-    const platform = deleteAllBtn.dataset.platform
-    const count = deleteAllBtn.dataset.count
-    const confirmed = await confirm(`Delete all ${count} releases from this platform?`)
-    
-    if (!confirmed) return
-
-    try {
-      const { data: previews } = await supabase
-        .from('music_previews')
-        .select('id, preview_audio_url')
-        .eq('user_id', session.user.id)
-        .eq('platform', platform)
-        .eq('is_active', true)
-
-      for (const preview of previews || []) {
-        if (preview.preview_audio_url) {
-          try {
-            const path = new URL(preview.preview_audio_url).pathname.split('/audio-previews/')[1]
-            if (path) await supabase.storage.from('audio-previews').remove([path])
-          } catch {}
-        }
+    // Platform Group Delete
+    const delAllBtn = e.target.closest('.platform-delete-all-btn');
+    if (delAllBtn) {
+      const platform = delAllBtn.dataset.platform;
+      const confirmed = await confirm(`Delete all ${delAllBtn.dataset.count} releases from ${platform}?`);
+      if (confirmed) {
+        await supabase.from('music_previews').update({ is_active: false }).eq('user_id', session.user.id).eq('platform', platform);
+        notify(`Cleaned up ${platform}`, '#3b82f6');
+        loadPreviews(session.user.id);
       }
-
-      const { error } = await supabase
-        .from('music_previews')
-        .update({ is_active: false })
-        .eq('user_id', session.user.id)
-        .eq('platform', platform)
-
-      if (error) throw error
-
-      notify('All releases deleted', '#10b981')
-      await loadPreviews(session.user.id)
-      await setupAdvancedAnalytics(session.user.id)
-      await updateLimitsDisplay(session.user.id)
-
-    } catch (error) {
-      notify('Delete failed', '#ef4444')
     }
-  })
-
-  document.addEventListener('click', (e) => {
-    const shareBtn = e.target.closest('.platform-share-btn')
-    if (!shareBtn) return
-
-    const platform = shareBtn.dataset.platform
-    const username = shareBtn.dataset.username
-    const cfg = platformConfig[platform]
-
-    const urlMap = {
-      youtube: `https://youtube.com/@${username}`,
-      instagram: `https://instagram.com/${username}`,
-      spotify: `https://open.spotify.com/user/${username}`,
-      apple_music: `https://music.apple.com/profile/${username}`
-    }
-
-    const url = urlMap[platform] || '#'
-    
-    navigator.clipboard.writeText(url).then(() => {
-      notify(`${cfg.name} link copied!`, '#10b981')
-    }).catch(() => {
-      notify('Failed to copy link', '#ef4444')
-    })
-  })
-}
+  });
+};
 
 const updateLimitsDisplay = async (userId) => {
-  const limits = await checkUserLimits(userId)
+  const limits = await checkUserLimits(userId);
+  const isPro = limits.tier === 'pro';
+
+  const updateEl = (selector, current, max, progressSelector) => {
+    const el = document.querySelector(selector);
+    const prog = document.querySelector(progressSelector);
+    if (el) el.textContent = isPro ? 'Unlimited' : `${current}/${max}`;
+    if (prog) prog.style.width = isPro ? '100%' : `${Math.min((current / max) * 100, 100)}%`;
+  };
+
+  updateEl('.release-limit-display', limits.current_release_count, limits.max_releases, '.release-progress');
+  updateEl('.audio-limit-display', limits.current_audio_count, limits.max_audio_previews, '.audio-progress');
   
-  const releaseDisplay = document.querySelector('.release-limit-display')
-  const audioDisplay = document.querySelector('.audio-limit-display')
-  const editsDisplay = document.querySelector('.edits-limit-display')
-  
-  const releaseProgress = document.querySelector('.release-progress')
-  const audioProgress = document.querySelector('.audio-progress')
-  const editsProgress = document.querySelector('.edits-progress')
+  const editEl = document.querySelector('.edits-limit-display');
+  if (editEl) editEl.textContent = isPro ? 'Unlimited' : `${limits.edits_remaining} remaining`;
+};
 
-  if (isPro) {
-    if (releaseDisplay) releaseDisplay.textContent = 'Unlimited'
-    if (audioDisplay) audioDisplay.textContent = 'Unlimited'
-    if (editsDisplay) editsDisplay.textContent = 'Unlimited'
-    
-    if (releaseProgress) releaseProgress.style.width = '100%'
-    if (audioProgress) audioProgress.style.width = '100%'
-    if (editsProgress) editsProgress.style.width = '100%'
-    
-    document.querySelectorAll('.limit-item').forEach(item => item.classList.add('unlimited'))
-  } else {
-    if (releaseDisplay) releaseDisplay.textContent = `${limits.current_release_count}/${limits.max_releases}`
-    if (audioDisplay) audioDisplay.textContent = `${limits.current_audio_count}/${limits.max_audio_previews}`
-    if (editsDisplay) editsDisplay.textContent = `${limits.edits_remaining} remaining`
-    
-    if (releaseProgress) releaseProgress.style.width = `${(limits.current_release_count / limits.max_releases) * 100}%`
-    if (audioProgress) audioProgress.style.width = `${(limits.current_audio_count / limits.max_audio_previews) * 100}%`
-    if (editsProgress) editsProgress.style.width = `${((limits.max_edits - limits.edits_remaining) / limits.max_edits) * 100}%`
-  }
-}
-
-const setupModals = () => {
-  const limitModal = document.getElementById('limitModal')
-  const limitClose = document.getElementById('limitClose')
-  const limitModalBtn = document.querySelector('.limitModalBtn')
-
-  if (limitModalBtn) {
-    limitModalBtn.onclick = () => limitModal?.classList.remove('hidden')
-  }
-
-  if (limitClose) {
-    limitClose.onclick = () => limitModal?.classList.add('hidden')
-  }
-
-  if (limitModal) {
-    limitModal.onclick = (e) => {
-      if (e.target === limitModal) limitModal.classList.add('hidden')
-    }
-  }
-}
-
-const setupLogout = () => {
-  document.querySelector('.logout-btn')?.addEventListener('click', async () => {
-    await supabase.auth.signOut()
-    window.location.href = 'register'
-  })
-}
-
+// INITIALIZATION
 const init = async () => {
-  try {
-    const { session } = await initAuth()
-    if (!session) return
+  // FIX #3: Initialize custom dropdowns first, before auth
+  const initCustomDropdowns = () => {
+    document.querySelectorAll('.custom-select').forEach(select => {
+      const selected = select.querySelector('.select-selected');
+      const options = select.dataset.options.split(',');
 
-    await Promise.all([
-      loadPreviews(session.user.id),
-      setupAdvancedAnalytics(session.user.id),
-      updateLimitsDisplay(session.user.id)
-    ])
+      const dropdown = document.createElement('div');
+      dropdown.classList.add('select-items-portal');
+      options.forEach(opt => {
+        const div = document.createElement('div');
+        div.textContent = opt;
+        dropdown.appendChild(div);
 
-    setupForm(session)
-    setupEditModal(session)
-    setupDeleteHandlers(session)
-    setupModals()
-    setupLogout()
+        div.addEventListener('click', e => {
+          e.stopPropagation();
+          selected.textContent = opt;
+          dropdown.classList.remove('show');
+          selected.classList.remove('active');
+        });
+      });
+      document.body.appendChild(dropdown);
 
-    document.querySelectorAll('[data-animate]').forEach((el, i) => {
-      setTimeout(() => el.classList.add('animated'), i * 50)
-    })
+      selected.addEventListener('click', e => {
+        e.stopPropagation();
 
-  } catch (error) {
-    console.error('Init error:', error)
-    notify('Failed to load dashboard', '#ef4444')
-  }
-}
+        const rect = selected.getBoundingClientRect();
+        dropdown.style.top = `${rect.bottom + window.scrollY}px`;
+        dropdown.style.left = `${rect.left + window.scrollX}px`;
+        dropdown.style.width = `${rect.width}px`;
 
-init()
-</script>
+        document.querySelectorAll('.select-items-portal.show').forEach(other => {
+          if (other !== dropdown) {
+            other.classList.remove('show');
+            other.previousSelected?.classList.remove('active');
+          }
+        });
 
-<script>
-document.addEventListener("click", e => {
-  if (e.target.closest(".link-1")) {
-    document.getElementById("linkModal").classList.remove("hidden");
-  }
-  if (e.target.closest("#linkClose") || e.target.id === "linkModal") {
-    document.getElementById("linkModal").classList.add("hidden");
-  }
-  if (e.target.closest(".limitModalBtn")) {
-    document.getElementById("limitModal").classList.remove("hidden");
-  }
-  if (e.target.closest("#limitClose") || e.target.id === "limitModal") {
-    document.getElementById("limitModal").classList.add("hidden");
-  }
-});
-
-document.querySelectorAll('.custom-select').forEach(select => {
-  const selected = select.querySelector('.select-selected');
-  const options = select.dataset.options.split(',');
-
-  const dropdown = document.createElement('div');
-  dropdown.classList.add('select-items-portal');
-  options.forEach(opt => {
-    const div = document.createElement('div');
-    div.textContent = opt;
-    dropdown.appendChild(div);
-
-    div.addEventListener('click', e => {
-      e.stopPropagation();
-      selected.textContent = opt;
-      dropdown.classList.remove('show');
-      selected.classList.remove('active');
-    });
-  });
-  document.body.appendChild(dropdown);
-
-  selected.addEventListener('click', e => {
-    e.stopPropagation();
-
-    const rect = selected.getBoundingClientRect();
-    dropdown.style.top = `${rect.bottom + window.scrollY}px`;
-    dropdown.style.left = `${rect.left + window.scrollX}px`;
-    dropdown.style.width = `${rect.width}px`;
-
-    document.querySelectorAll('.select-items-portal.show').forEach(other => {
-      if (other !== dropdown) {
-        other.classList.remove('show');
-        other.previousSelected?.classList.remove('active');
-      }
+        dropdown.classList.toggle('show');
+        selected.classList.toggle('active');
+        dropdown.previousSelected = selected;
+      });
     });
 
-    dropdown.classList.toggle('show');
-    selected.classList.toggle('active');
-    dropdown.previousSelected = selected;
-  });
-});
-
-document.addEventListener('click', () => {
-  document.querySelectorAll('.select-items-portal.show').forEach(dropdown => {
-    dropdown.classList.remove('show');
-    dropdown.previousSelected?.classList.remove('active');
-  });
-});
-
-['scroll','resize'].forEach(ev => {
-  window.addEventListener(ev, () => {
-    document.querySelectorAll('.select-items-portal.show').forEach(dropdown => {
-      const selected = dropdown.previousSelected;
-      if (!selected) return;
-      const rect = selected.getBoundingClientRect();
-      dropdown.style.top = `${rect.bottom + window.scrollY}px`;
-      dropdown.style.left = `${rect.left + window.scrollX}px`;
-      dropdown.style.width = `${rect.width}px`;
+    document.addEventListener('click', () => {
+      document.querySelectorAll('.select-items-portal.show').forEach(dropdown => {
+        dropdown.classList.remove('show');
+        dropdown.previousSelected?.classList.remove('active');
+      });
     });
-  });
-});
+
+    ['scroll','resize'].forEach(ev => {
+      window.addEventListener(ev, () => {
+        document.querySelectorAll('.select-items-portal.show').forEach(dropdown => {
+          const selected = dropdown.previousSelected;
+          if (!selected) return;
+          const rect = selected.getBoundingClientRect();
+          dropdown.style.top = `${rect.bottom + window.scrollY}px`;
+          dropdown.style.left = `${rect.left + window.scrollX}px`;
+          dropdown.style.width = `${rect.width}px`;
+        });
+      });
+    });
+  };
+
+  // Initialize dropdowns
+  initCustomDropdowns();
+
+  // Check for invite code in URL
+  await checkInviteCode();
+
+  const { session } = await initAuth();
+  if (session) {
+    setupForm(session);
+    setupEditModal(session);
+    setupDeletion(session);
+    await loadPreviews(session.user.id);
+    await setupAdvancedAnalytics(session.user.id);
+    await updateLimitsDisplay(session.user.id);
+    
+    // Setup invite system
+    await setupInviteSystem(session.user.id);
+
+    // Modal UI toggles
+    document.querySelector('.limitModalBtn')?.addEventListener('click', () => {
+      document.getElementById('limitModal').classList.remove('hidden');
+    });
+    document.getElementById('limitClose')?.addEventListener('click', () => {
+      document.getElementById('limitModal').classList.add('hidden');
+    });
+  }
+};
+
+init();
 </script>
 </body>
 </html>
