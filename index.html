@@ -822,6 +822,7 @@
 </div>
 </div>
 
+
 <script type="module">
   import { supabase } from './supabase-client.js'
 
@@ -1062,7 +1063,6 @@ document.getElementById('upgradeToPro').addEventListener('click', async () => {
           
           if (error) throw error
           
-          // Track Pro upgrade from invite if applicable
           await trackProUpgrade(window.currentSession.user.id)
           
           notify('🎉 Payment successful! Upgrading to Pro...', '#10b981')
@@ -1090,7 +1090,6 @@ document.getElementById('upgradeToPro').addEventListener('click', async () => {
 
 // ========== INVITE SYSTEM FUNCTIONS ==========
 
-// Generate or get existing invite code
 const getInviteCode = async (userId) => {
   try {
     const { data: profile, error: profileError } = await supabase
@@ -1108,7 +1107,6 @@ const getInviteCode = async (userId) => {
       return profile.invite_code
     }
     
-    // Try database function first
     try {
       const { data, error } = await supabase
         .rpc('get_or_create_invite_code', { user_id: userId })
@@ -1120,7 +1118,6 @@ const getInviteCode = async (userId) => {
       console.log('Database function not available, generating manually')
     }
     
-    // Fallback: generate code manually
     const newCode = Math.random().toString(36).substring(2, 10).toUpperCase()
     
     const { error: updateError } = await supabase
@@ -1140,7 +1137,6 @@ const getInviteCode = async (userId) => {
   }
 }
 
-// Get invite stats
 const getInviteStats = async (userId) => {
   try {
     const { data, error } = await supabase
@@ -1163,7 +1159,6 @@ const getInviteStats = async (userId) => {
   }
 }
 
-// Setup invite link generator
 const setupInviteSystem = async (userId) => {
   try {
     const inviteCode = await getInviteCode(userId)
@@ -1198,7 +1193,6 @@ const setupInviteSystem = async (userId) => {
           notify('Invite link copied! Share it with friends to earn rewards.', '#10b981')
         } catch (err) {
           console.error('Failed to copy:', err)
-          
           inviteLinkDisplay.select()
           document.execCommand('copy')
           notify('Invite link copied!', '#10b981')
@@ -1206,7 +1200,6 @@ const setupInviteSystem = async (userId) => {
       })
     }
     
-    // Get and display invite stats
     try {
       const stats = await getInviteStats(userId)
       const proInviteCountEl = document.getElementById('proInviteCount')
@@ -1221,7 +1214,6 @@ const setupInviteSystem = async (userId) => {
   }
 }
 
-// Check for invite code in URL
 const checkInviteCode = async () => {
   const urlParams = new URLSearchParams(window.location.search)
   const inviteCode = urlParams.get('invite')
@@ -1242,10 +1234,8 @@ const checkInviteCode = async () => {
   }
 }
 
-// Log invite usage
 const logInviteUsage = async (inviteCode, userId) => {
   try {
-    // Try using database function if it exists
     const { error } = await supabase
       .rpc('log_invite_usage', {
         p_invite_code: inviteCode,
@@ -1253,23 +1243,19 @@ const logInviteUsage = async (inviteCode, userId) => {
       })
     
     if (error) {
-      // If function doesn't exist, silently skip (not critical)
       console.log('Invite tracking not yet enabled:', error.message)
     }
   } catch (error) {
-    // Don't block dashboard if invite tracking fails
     console.log('Invite tracking error (non-critical):', error)
   }
 }
 
-// Track pro upgrade from invite
 const trackProUpgrade = async (userId) => {
   try {
     const inviteCode = localStorage.getItem('vynal_invite_code')
     
     if (!inviteCode) return
     
-    // Try to track pro invite
     try {
       const { error: trackError } = await supabase
         .rpc('track_pro_invite', {
@@ -1284,7 +1270,6 @@ const trackProUpgrade = async (userId) => {
       console.log('Pro invite tracking error (non-critical):', trackErr)
     }
     
-    // Try to mark upgrade
     try {
       const { error: markError } = await supabase
         .rpc('mark_pro_upgrade_from_invite', {
@@ -1298,7 +1283,6 @@ const trackProUpgrade = async (userId) => {
       console.log('Upgrade marking error (non-critical):', markErr)
     }
     
-    // Clear invite code regardless
     localStorage.removeItem('vynal_invite_code')
     
   } catch (error) {
@@ -1316,7 +1300,6 @@ const initAuth = async () => {
   window.currentSession = session
   isPro = profile.tier === 'pro'
   
-  // FIX #2: Enable upgrade button after session is confirmed
   const upgradeBtn = document.getElementById('accessBlockerUpgradeBtn')
   if (upgradeBtn) {
     upgradeBtn.disabled = false
@@ -1338,20 +1321,20 @@ const initAuth = async () => {
   document.querySelectorAll('.artist__label').forEach(el => el.textContent = profile.role || 'Artist')
   
   const card = document.getElementById('artistCard')
- if (card && profile.profile_picture) {
-  card.style.backgroundImage = `
-    linear-gradient(
-      to top,
-      rgba(0,0,0,0.9) 0%,
-      rgba(0,0,0,0.7) 30%,
-      rgba(0,0,0,0.4) 60%,
-      rgba(0,0,0,0) 100%
-    ),
-    url('${profile.profile_picture}')
-  `
-  card.style.backgroundSize = 'cover'
-  card.style.backgroundPosition = 'center'
-}
+  if (card && profile.profile_picture) {
+    card.style.backgroundImage = `
+      linear-gradient(
+        to top,
+        rgba(0,0,0,0.9) 0%,
+        rgba(0,0,0,0.7) 30%,
+        rgba(0,0,0,0.4) 60%,
+        rgba(0,0,0,0) 100%
+      ),
+      url('${profile.profile_picture}')
+    `
+    card.style.backgroundSize = 'cover'
+    card.style.backgroundPosition = 'center'
+  }
   
   if (isPro) {
     document.querySelector('.upgrade-to-pro-btn')?.remove()
@@ -1442,7 +1425,6 @@ const uploadAudio = async (file, session) => {
     throw new Error(check.message)
   }
 
-  // FIX #4: Create audio element in DOM for iOS compatibility
   const audioElement = document.createElement('audio')
   audioElement.style.display = 'none'
   audioElement.preload = 'metadata'
@@ -1472,7 +1454,6 @@ const uploadAudio = async (file, session) => {
       rej(new Error('Invalid audio'))
     }
 
-    // Timeout fallback for iOS
     setTimeout(() => {
       if (audioElement.duration) {
         const dur = Math.floor(audioElement.duration)
@@ -2194,7 +2175,10 @@ const loadPreviews = async (userId) => {
             ${Object.entries(platformConfig).slice(0, 8).map(([key, cfg]) => `
               <div class="platform-card">
                 <div class="platform-card-logo">
-                  <img src="${cfg.logo}" alt="${cfg.name}" />
+                  ${cfg.logo
+                    ? `<img src="${cfg.logo}" alt="${cfg.name}" onerror="this.replaceWith(Object.assign(document.createElement('i'),{className:'${cfg.icon}',style:'color:${cfg.color};font-size:28px'}))" />`
+                    : `<i class="${cfg.icon}" style="color:${cfg.color};font-size:28px"></i>`
+                  }
                 </div>
                 <div class="platform-card-name">${cfg.name}</div>
                 <div class="platform-card-type">Streaming</div>
@@ -2210,7 +2194,6 @@ const loadPreviews = async (userId) => {
   const links = await getSocialLinks(userId)
   const grouped = previews.reduce((acc, p) => ({ ...acc, [p.platform]: [...(acc[p.platform]||[]), p] }), {})
 
-  // FIX #1: DOM DIFFING - Build map of existing elements
   const existingPlatformSections = new Map()
   container.querySelectorAll('.posts.span-4').forEach(section => {
     const platformHeader = section.querySelector('.platform-post-header')
@@ -2218,7 +2201,6 @@ const loadPreviews = async (userId) => {
       const platformIcon = platformHeader.querySelector('i[class*="ri-"]')
       const platformText = platformHeader.querySelector('strong a')?.textContent
       
-      // Try to identify platform from icon or text
       let foundPlatform = null
       for (const [key, cfg] of Object.entries(platformConfig)) {
         if (platformIcon?.className.includes(cfg.icon.replace('ri-', '')) || platformText === cfg.name) {
@@ -2235,7 +2217,6 @@ const loadPreviews = async (userId) => {
 
   const newPlatforms = new Set(Object.keys(grouped))
   
-  // Remove platform sections that no longer exist
   existingPlatformSections.forEach((section, platform) => {
     if (!newPlatforms.has(platform)) {
       section.remove()
@@ -2251,7 +2232,6 @@ const loadPreviews = async (userId) => {
     let section = existingPlatformSections.get(platform)
     
     if (!section) {
-      // Create new section
       section = document.createElement('div')
       section.className = 'posts span-4'
       section.dataset.platform = platform
@@ -2259,7 +2239,12 @@ const loadPreviews = async (userId) => {
         <div class="platform-section-header">
           <div class="post-header platform-post-header">
             <div class="post-header-left">
-              <span><i class="${cfg.icon} ri-xl" style="color:${cfg.color};"></i></span>
+              <span>
+                ${cfg.logo
+                  ? `<img src="${cfg.logo}" alt="${cfg.name}" style="width:24px;height:24px;object-fit:contain;" onerror="this.replaceWith(Object.assign(document.createElement('i'),{className:'${cfg.icon} ri-xl',style:'color:${cfg.color}'}))">`
+                  : `<i class="${cfg.icon} ri-xl" style="color:${cfg.color};"></i>`
+                }
+              </span>
               <div class="post-header-info">
                 <strong><a>${cfg.name}</a><a class="t-sm t-400">@${username}</a></strong>
                 <div class="muted"><a class="profile">Available here!</a></div>
@@ -2284,14 +2269,12 @@ const loadPreviews = async (userId) => {
       `
       container.appendChild(section)
     } else {
-      // Update existing section header data
       const deleteBtn = section.querySelector('.platform-delete-all-btn')
       if (deleteBtn) deleteBtn.dataset.count = items.length
     }
 
     const grid = section.querySelector('.platform-releases-grid')
     
-    // Build map of existing preview cards
     const existingCards = new Map()
     grid.querySelectorAll('[data-preview-id]').forEach(card => {
       existingCards.set(card.dataset.previewId, card)
@@ -2299,7 +2282,6 @@ const loadPreviews = async (userId) => {
 
     const newPreviewIds = new Set(items.map(p => p.id))
     
-    // Remove cards that no longer exist
     existingCards.forEach((card, id) => {
       if (!newPreviewIds.has(id)) {
         card.remove()
@@ -2310,20 +2292,16 @@ const loadPreviews = async (userId) => {
       const existingCard = existingCards.get(p.id)
       
       if (!existingCard) {
-        // Create new card
         grid.insertAdjacentHTML('beforeend', buildPreviewCard(p))
         setTimeout(() => {
           const card = grid.querySelector(`[data-preview-id="${p.id}"]`)
           if (p.preview_audio_url) initAudioPlayer(card, p.id)
         }, 100)
       } else {
-        // Card exists - update non-audio content only
         const releaseNameEl = existingCard.querySelector('.audio-title') || existingCard.querySelector('.t-400')
         if (releaseNameEl) {
           releaseNameEl.textContent = p.release_name
         }
-        
-        // Don't touch audio player to preserve playback state
       }
     })
   })
@@ -2351,13 +2329,29 @@ const displayPlatformIcons = (platforms) => {
     
     const iconWrapper = document.createElement('div')
     iconWrapper.style.display = 'inline-block'
+    iconWrapper.title = cfg.name
     
-    const i = document.createElement('i')
-    i.className = cfg.icon
-    i.style.color = cfg.color
-    i.title = cfg.name
+    if (cfg.logo) {
+      const img = document.createElement('img')
+      img.src = cfg.logo
+      img.alt = cfg.name
+      img.style.width = '20px'
+      img.style.height = '20px'
+      img.style.objectFit = 'contain'
+      img.onerror = () => {
+        const i = document.createElement('i')
+        i.className = cfg.icon
+        i.style.color = cfg.color
+        iconWrapper.replaceChild(i, img)
+      }
+      iconWrapper.appendChild(img)
+    } else {
+      const i = document.createElement('i')
+      i.className = cfg.icon
+      i.style.color = cfg.color
+      iconWrapper.appendChild(i)
+    }
     
-    iconWrapper.appendChild(i)
     icons.appendChild(iconWrapper)
   })
 }
@@ -2380,7 +2374,10 @@ const setupEditModal = (session) => {
             <div class="select-items-edit" style="display:grid;grid-template-columns:repeat(auto-fit, minmax(140px, 1fr));gap:12px;padding-top:10px;">
               ${Object.entries(platformConfig).map(([key, cfg]) => `
                 <div class="platform-select-option" data-platform="${key}" style="display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:10px;cursor:pointer;background:rgba(255,255,255,0.04);transition:all .25s ease;">
-                  <img src="${cfg.logo}" alt="${cfg.name}" style="width:24px;height:24px;object-fit:contain;" />
+                  ${cfg.logo
+                    ? `<img src="${cfg.logo}" alt="${cfg.name}" style="width:24px;height:24px;object-fit:contain;" onerror="this.replaceWith(Object.assign(document.createElement('i'),{className:'${cfg.icon}',style:'color:${cfg.color};font-size:20px'}))">`
+                    : `<i class="${cfg.icon}" style="color:${cfg.color};font-size:20px"></i>`
+                  }
                   <span>${cfg.name}</span>
                 </div>
               `).join('')}
@@ -2638,9 +2635,8 @@ const setupForm = (session) => {
     const observer = new MutationObserver(() => {
       const displayText = selected.textContent.trim()
       const platformKey = platformNameToKey[displayText]
-            if (platformKey) {
+      if (platformKey) {
         selectedPlatform = platformKey;
-        // Autofill username if the user already has a link for this platform
         getSocialLinks(session.user.id).then(links => {
           if (links[platformKey]) {
             document.getElementById('uDesc').value = links[platformKey].username;
@@ -2721,7 +2717,6 @@ const setupForm = (session) => {
 
 const setupDeletion = (session) => {
   document.addEventListener('click', async (e) => {
-    // Single Delete
     const delBtn = e.target.closest('.delete-preview-btn');
     if (delBtn) {
       const id = delBtn.dataset.previewId;
@@ -2734,7 +2729,6 @@ const setupDeletion = (session) => {
       }
     }
 
-    // Platform Group Delete
     const delAllBtn = e.target.closest('.platform-delete-all-btn');
     if (delAllBtn) {
       const platform = delAllBtn.dataset.platform;
@@ -2768,7 +2762,6 @@ const updateLimitsDisplay = async (userId) => {
 
 // INITIALIZATION
 const init = async () => {
-  // FIX #3: Initialize custom dropdowns first, before auth
   const initCustomDropdowns = () => {
     document.querySelectorAll('.custom-select').forEach(select => {
       const selected = select.querySelector('.select-selected');
@@ -2832,10 +2825,8 @@ const init = async () => {
     });
   };
 
-  // Initialize dropdowns
   initCustomDropdowns();
 
-  // Check for invite code in URL
   await checkInviteCode();
 
   const { session } = await initAuth();
@@ -2847,10 +2838,8 @@ const init = async () => {
     await setupAdvancedAnalytics(session.user.id);
     await updateLimitsDisplay(session.user.id);
     
-    // Setup invite system
     await setupInviteSystem(session.user.id);
 
-    // Modal UI toggles
     document.querySelector('.limitModalBtn')?.addEventListener('click', () => {
       document.getElementById('limitModal').classList.remove('hidden');
     });
@@ -2862,5 +2851,6 @@ const init = async () => {
 
 init();
 </script>
+
 </body>
 </html>
