@@ -4,7 +4,7 @@
    --panel: #121821;
    --panel-2: #1a2230;
    --ink: rgb(255, 255, 255);
-   --brand: #5c22d1;
+   --brand: #146ec2;
    --brand-2: #e93f0fac;
    --muted: #ffffffac;
    --accent: #29f0b4;
@@ -211,7 +211,7 @@
    position: sticky;
    top: 0;
    z-index: 5;
-   background: #000000;
+   background: none;
    padding: 0 10px;
    display: flex;
    border-bottom: none;
@@ -1883,13 +1883,14 @@ background:grey;color:white;padding:0px 10px;border-radius: var(--autoradius)
 
 }
 
-.artist {
+
+  .artist {
   position: relative;
-  border-radius: var(--autoradius);
   padding: clamp(24px, 5vw, 64px);
-  min-height: 250px;
+  min-height: 350px;
   min-width: 0;
   display: flex;
+  margin: -85px -10px 0;
   flex-direction: column;
   justify-content: flex-end;
   gap: 12px;
@@ -1898,6 +1899,9 @@ background:grey;color:white;padding:0px 10px;border-radius: var(--autoradius)
     url("user.webp") center / cover no-repeat;
   overflow: hidden;
   transform: translateZ(0);
+  background-position: top center;
+background-size: cover;
+background-repeat: no-repeat;
   backface-visibility: hidden;
   mask-image: radial-gradient(white, black);
   mask-repeat: no-repeat;
@@ -1908,7 +1912,6 @@ background:grey;color:white;padding:0px 10px;border-radius: var(--autoradius)
   -webkit-mask-position: center;
   -webkit-mask-size: cover;
 }
-
 .artist__icons {
   position: absolute;
   top: 16px;
