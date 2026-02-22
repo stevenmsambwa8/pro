@@ -620,14 +620,13 @@
 
 <header class="header" role="banner" style="padding: 5px;">
 <div class="moblogo">
-<span><img src="pro-dark.png" width="80"></span>
+<span><img src="logo-black.png" width="40"></span>
 </div>
 <div class="searchbar">
 </div>
 <div class="actions">
 <div class="limit">
-<button class="btn ghost upgrade-to-pro-btn" style="border:0; margin:0 -15px;background:none;color:grey;"><i class="ri-vip-crown-line t-l"></i></button>
-<span class="limited-lock m-t7 m-r-5" style="color: grey;background: black;"><i class="ri-lock-line"></i></span>
+<button class="btn ghost upgrade-to-pro-btn" style="border:0; margin:0 -15px;background:none;color: white;"><i class="ri-vip-crown-line t-l"></i></button>
 </div>
 <button class="btn-icon limitModalBtn" aria-label="create" style="margin-right: 5px;border: none;color:white;background:var(--brand);font-size: 20px;padding: 0 20px;"><i class="ri-pie-chart-line"></i></button>
 <a><img class="avatar uploading" src="user.webp"></a>
@@ -647,7 +646,7 @@
 </div>
 
 <div class="card span-5" data-animate>
-<h2>Add New Release Link</h2>
+<h2>Add New Release Link!</h2>
 <form id="uploadForm" class="upload" novalidate>
 <div class="row">
 <div class="col-6">
@@ -655,7 +654,7 @@
   <div class="select-selected">Select Platform</div>
 </div>
 </div>
-<div class="col-6"><input class="input" style="background: none;color: white;" type="text" id="uDesc" placeholder="Platform @username"></div>
+<div class="col-6"><input class="input" style="background: none;color: white;" type="text" id="uDesc" placeholder="Platform username"></div>
 </div>
 <div class="row">
 <div class="col-8"><input class="input" style="background: none;color: white;" type="text" id="uTags" placeholder="Release Name"></div>
@@ -1339,11 +1338,20 @@ const initAuth = async () => {
   document.querySelectorAll('.artist__label').forEach(el => el.textContent = profile.role || 'Artist')
   
   const card = document.getElementById('artistCard')
-  if (card && profile.profile_picture) {
-    card.style.backgroundImage = `url('${profile.profile_picture}')`
-    card.style.backgroundSize = 'cover'
-    card.style.backgroundPosition = 'center'
-  }
+ if (card && profile.profile_picture) {
+  card.style.backgroundImage = `
+    linear-gradient(
+      to top,
+      rgba(0,0,0,0.9) 0%,
+      rgba(0,0,0,0.7) 30%,
+      rgba(0,0,0,0.4) 60%,
+      rgba(0,0,0,0) 100%
+    ),
+    url('${profile.profile_picture}')
+  `
+  card.style.backgroundSize = 'cover'
+  card.style.backgroundPosition = 'center'
+}
   
   if (isPro) {
     document.querySelector('.upgrade-to-pro-btn')?.remove()
