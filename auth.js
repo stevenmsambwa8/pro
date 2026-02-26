@@ -214,13 +214,13 @@ async function compressImage(file, targetSizeKB = 90) {
         const reader = new FileReader()
 
         reader.onerror = () => reject(new Error('Failed to read file'))
-        
+
         reader.onload = (e) => {
             img.src = e.target.result
         }
 
         img.onerror = () => reject(new Error('Failed to load image'))
-        
+
         img.onload = () => {
             const canvas = document.createElement('canvas')
             const ctx = canvas.getContext('2d')
@@ -346,7 +346,7 @@ signupForm.addEventListener('submit', async (e) => {
             try {
                 // Compress image to ~90KB
                 const compressedBlob = await compressImage(coverFile, 90)
-                
+
                 const fileExt = 'jpg' // Always use jpg after compression
                 const fileName = `${authData.user.id}-${Date.now()}.${fileExt}`
 
@@ -378,7 +378,7 @@ signupForm.addEventListener('submit', async (e) => {
         // Store user data in profiles table
         const { error: profileError } = await supabase
             .from('profiles')
-            .insert({
+            .upsert({
                 id: authData.user.id,
                 email: email,
                 stage_name: stageName,
@@ -386,6 +386,9 @@ signupForm.addEventListener('submit', async (e) => {
                 bio: bio,
                 profile_picture: coverUrl,
                 created_at: new Date().toISOString()
+            }, {
+                onConflict: 'id',
+                ignoreDuplicates: false
             })
 
         if (profileError) throw profileError
