@@ -878,17 +878,52 @@ const getVisitorId = () => {
   return id
 }
 
-const trackListener = async (previewId, action, artistId) => {
-  if (!artistId || !previewId || window.currentSession?.user?.id === artistId) return
+// ========== TRACKING — AGGRESSIVE DEDUP ==========
+const getPlayKey = (previewId) => {
   const visitorId = getVisitorId()
   const today = new Date().toISOString().split('T')[0]
-  const { data: existing } = await supabase.from('preview_listeners').select('*').eq('preview_id', previewId).eq('visitor_id', visitorId).eq('action_type', action).gte('created_at', `${today}T00:00:00`).maybeSingle()
-  if (existing) return
-  await supabase.from('preview_listeners').insert({ preview_id:previewId, visitor_id:visitorId, artist_id:artistId, action_type:action, created_at:new Date().toISOString() })
-  const count = await getListenerCount(previewId)
-  const el = document.querySelector(`[data-preview-id="${previewId}"] .listener-count`)
-  if (el) el.textContent = count
-  if (window.currentSession?.user?.id) setupAdvancedAnalytics(window.currentSession.user.id)
+  return `played_${visitorId}_${previewId}_${today}`
+}
+const hasPlayedToday = (previewId) => localStorage.getItem(getPlayKey(previewId)) === '1'
+const markPlayedToday = (previewId) => localStorage.setItem(getPlayKey(previewId), '1')
+
+const trackListener = async (previewId, action, artistId) => {
+  // Never track the artist's own plays on their own dashboard
+  if (!artistId || !previewId || window.currentSession?.user?.id === artistId) return
+
+  // Layer 1: localStorage check (instant, survives tab close/reopen)
+  if (action === 'play' && hasPlayedToday(previewId)) return
+
+  try {
+    const visitorId = getVisitorId()
+    const today = new Date().toISOString().split('T')[0]
+
+    // Layer 2: DB check (cross-device dedup)
+    const { data: existing } = await supabase.from('preview_listeners').select('id')
+      .eq('preview_id', previewId).eq('visitor_id', visitorId)
+      .eq('action_type', action).gte('created_at', `${today}T00:00:00`).maybeSingle()
+
+    if (existing) {
+      if (action === 'play') markPlayedToday(previewId)
+      return
+    }
+
+    const { error: insertErr } = await supabase.from('preview_listeners').insert({
+      preview_id: previewId, visitor_id: visitorId,
+      artist_id: artistId, action_type: action,
+      created_at: new Date().toISOString()
+    })
+
+    if (!insertErr && action === 'play') {
+      markPlayedToday(previewId)
+      const count = await getListenerCount(previewId)
+      const el = document.querySelector(`[data-preview-id="${previewId}"] .listener-count`)
+      if (el) el.textContent = count
+      if (window.currentSession?.user?.id) setupAdvancedAnalytics(window.currentSession.user.id)
+    }
+  } catch (error) {
+    console.error('trackListener error:', error)
+  }
 }
 
 const getAnalyticsData = async (userId) => {
@@ -1119,14 +1154,14 @@ const initAudioPlayer = (container, previewId) => {
     }
   }
   drawWaveform()
-  let tracked = false
+  // NOTE: tracked flag removed — trackListener handles all dedup via localStorage + DB
   btn.onclick = async () => {
     if (audio.paused) {
       document.querySelectorAll('audio').forEach(a => {
         if (a !== audio) { a.pause(); const oi = a.closest('.custom-audio-player')?.querySelector('.play-pause-btn i'); if(oi) oi.className='ri-play-fill play-icon'; a.closest('.custom-audio-player')?.querySelector('.play-pause-btn')?.classList.remove('playing') }
       })
       audio.play(); icon.className='ri-pause-fill play-icon'; btn.classList.add('playing')
-      if (!tracked && window.currentSession?.user?.id) { await trackListener(previewId,'play',window.currentSession.user.id); tracked=true }
+      if (window.currentSession?.user?.id) await trackListener(previewId, 'play', window.currentSession.user.id)
     } else { audio.pause(); icon.className='ri-play-fill play-icon'; btn.classList.remove('playing') }
   }
   audio.ontimeupdate = () => { time.textContent=`${formatTime(Math.floor(audio.currentTime))} / ${formatTime(Math.floor(audio.duration)||0)}`; progress.style.width=((audio.currentTime/audio.duration)*100)+'%' }
